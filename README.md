@@ -70,7 +70,7 @@ require("select-db")();
 
 var db = 'db';
 
-const result = creatDataBase(db) // db: String includes folder path when you want to create your database
+const result = createDataBase(db) // db: String includes folder path when you want to create your database
 // result -> {statement : true}
 ```
 
@@ -79,7 +79,7 @@ const result = creatDataBase(db) // db: String includes folder path when you wan
 
 var db = 'db', tbl = 'table';
 
-creatTable(db, table,clmn,dflt)
+createTable(db, table,clmn,dflt)
 // db: String includes folder path when you want to create your database
 // db: String includes folder path when you want to create your table 
 // clmn: Column names
@@ -89,7 +89,7 @@ creatTable(db, table,clmn,dflt)
 ###### Table creation example:
 ```js
 
-const result = creatTable(db, tbl, [ 'Index', 'User Id', 'First Name', 'Last Name', 'Sex','Email','Phone','Date of birth','Job Title' ],
+const result = createTable(db, tbl, [ 'Index', 'User Id', 'First Name', 'Last Name', 'Sex','Email','Phone','Date of birth','Job Title' ],
 								[ '_idx', 'u_id', 'f_name', 'l_name', '_sex','_email','_phone','d_birth','j_title' ]
 					)
 // result -> { time: '4 ms', statement: true }
