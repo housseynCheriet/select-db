@@ -1,1 +1,4119 @@
-module.exports=function(){let e=require("path");const r=require("fs"),{parseCsv:t}=require("select-csv");let n=e.resolve(process.cwd()),i=2e3,f=1e6;function o(e,r,t){let n=[],i=0,f=r.length;if(i=e.indexOf(r),t){let o=0;for(;-1!=i&&o<t;)n.push(e.slice(0,i)),i=(e=e.slice(i+f)).indexOf(r),o++}else for(;-1!=i;)n.push(e.slice(0,i)),i=(e=e.slice(i+f)).indexOf(r);return n.push(e),n}function l(e,r){let t=1,n=127&e[0];for(;t<r;)n+=128*e[t]*256**(t-1),t++;return n}function d(e){return[(16711680&e)>>16,(65280&e)>>8,255&e]}function s(e){try{return r.lstatSync(e).isDirectory()}catch(e){return!1}}function c(e,r,t,n){if("*"!==r&&!Array.isArray(r))return{error:" Columns must a array .. "};let i={},f={};if("*"===r)for(let r in e)i[e[r][0]]=r,f[r]=e[r][1];else for(let t of r){if(!(t in e))return{error:' No column with this name "'+t+'" in the table .. '};i[e[t][0]]=t,f[t]=e[t][1]}return{[t]:i,[n]:f}}function a(e,t,n){var{error:i,pathTb:f,clmn:n,clmnL:l}=function(e,t,n){if("string"!=typeof t)return{error:"The 1st parameter 'table' must be 'string'"};let i=`${e}/${t}`;if(!r.existsSync(i))return{error:"This table not found.."};if("*"!==n&&!Array.isArray(n))return{error:" Columns must a array .. "};return{pathTb:i,clmn:n,clmnL:n.length}}(e,t,n);if(i)return{error:i};var d=o(r.readFileSync(f+"/i/refCol.txt","utf8"),",",1),s=JSON.parse(d[1]),c=[];if("*"===n){l=Object.keys(s).length;for(let e in s)c.push([s[e][0],p(250,s[e][0])])}else for(let e of n){if(!(e in s))return{error:' No column with this name "'+e+'" in the table .. '};c.push([s[e][0],p(250,s[e][0])])}return{pathTb:f,ca:c,clmnL:l}}function u(e,t,n){if("*"!==t&&!Array.isArray(t))return{error:" Columns must a array .. "};if(!Array.isArray(n))return{error:" Values must a array .. "};var i,f=o(r.readFileSync(e+"/i/refCol.txt","utf8"),",",1),l=JSON.parse(f[1]),d={};let s=0;if("*"===t){if(t.length!=Object.keys(n).length)return{error:" The length of the values in the array is not equal to the length of the columns in the table .. "};for(let e in l)i=Buffer.from(n[s].toString()),d[l[e][0]]=[p(250,l[e][0]),p(250,i.length),i],s++}else{if(t.length!=n.length)return{error:" The length of the values in the array is not equal to the length of the columns .. "};for(let e of t){if(!(e in l))return{error:' No column with this name "'+e+'" in the table .. '};i=Buffer.from(n[s].toString()),d[l[e][0]]=[p(250,l[e][0]),p(250,i.length),i],s++}}return{setV:d}}function v(e,r){if("*"!==r&&!Array.isArray(r))return{error:" Columns must a array .. "};let t={},n={},i={};if("*"===r)for(let r in e)t[e[r][0]]=r,n[r]=e[r][1],i[r]=[p(250,e[r][0]),e[r][0]];else for(let f of r){if(!(f in e))return{error:' No column with this name "'+f+'" in the table .. '};t[e[f][0]]=f,n[f]=e[f][1],i[f]=[p(250,e[f][0]),e[f][0]]}return{colN:t,colval:n,cn:i}}function h(e){let t=o(r.readFileSync(e+"/i/ref.txt","utf8"),"\n");return[o(t[0],"|").map(Number),o(t[1],"|").map(Number),o(t[2],"|").map(Number)]}function p(e,r){var t=e,n=[];for(n.push(r%t),r-=r%t;r>=t;)n.push(r/t%e),r-=r%(t*=e);return n}function y(e,r,t,n){return 1}function b(e,t,n){var i,f,o,s,c,a,u,v=t.s,h=t.b,p=[0,0,0,0,0,0,0,0,0,0,0];let y=e+t.f+".txt",b=r.openSync(y,"w+");for(let e in n){i=(a=n[s=Number(e)]).o[1],r.writeFileSync(b,t.idFr.slice(0,i)),r.writeFileSync(b,Buffer.from(a.ids)),i+=a.lenId,p[0]+=a.newLen-a.lenId,delete n[s];break}for(let e in n){for(o=0,a=n[c=Number(e)],s+1<c&&(r.writeFileSync(b,Buffer.from(t.idFr.slice(i,a.o[1]))),I(0)),f=c;f%10==0;)p[o+=1]+=p[o-1],p[o-1]=0,f/=10;s=c,i=a.o[1]+a.lenId,r.writeFileSync(b,Buffer.from(a.ids)),0!=p[o]&&(u=a.o[0]+p[o],r.writeSync(t.idxF,Buffer.from(d(u)),0,3,c*v+h)),p[0]+=a.newLen-a.lenId}function I(e){let n,i,f=s+1;{n=f*v;let o=m(f,t,v);if(0!=o.length&&l(o,h)==t.f){i=65536*o[h]+256*o[h+1]+o[h+2];let s=p.reduce(((e,r)=>e+r),0);if(0!=s){let i,s=0,a=1,y=10;for(;;){for(;f%y==0;)s+=1,a=10**s,y*=10,p[s]+=p[s-1],p[s-1]=0;if(i=p[s],u=65536*o[h]+256*o[h+1]+o[h+2]+i,r.writeSync(t.idxF,Buffer.from(d(u)),0,3,n+h),f+=a,!(e||f<c))break;if(n=f*v,o=m(f,t,v),0==o.length||l(o,h)!=t.f)break}t.difOffs=[i,s]}}else t.difOffs=[p[0],0]}}r.writeFileSync(b,t.idFr.slice(i)),r.close(b,(function(e){})),I(1)}function I(e,t,n){var i,f,o,s,c,a,u,v=t.s,h=t.b,p=t.xf;p[0]=128|p[0];var y=[0,0,0,0,0,0,0,0,0,0,0];let b=e+t.f+".txt",I=r.openSync(b,"w+");for(let e in n){i=(a=n[s=Number(e)]).o[1],r.writeFileSync(I,t.idFr.slice(0,i)),r.writeSync(t.idxF,p,0,h,s*v),i+=a.lenId,y[0]-=a.lenId,delete n[s];break}for(let e in n){for(o=0,a=n[c=Number(e)],s+1<c&&(r.writeFileSync(I,Buffer.from(t.idFr.slice(i,a.o[1]))),F(0)),f=c;f%10==0;)y[o+=1]+=y[o-1],y[o-1]=0,f/=10;s=c,i=a.o[1]+a.lenId,u=a.o[0]+y[o],y[0]-=a.lenId,r.writeSync(t.idxF,Buffer.from([...p,...d(u)]),0,v,c*v)}function F(e){let n,i,f=s+1;{n=f*v;let o=m(f,t,v);if(0!=o.length&&l(o,h)==t.f){i=65536*o[h]+256*o[h+1]+o[h+2];let s=y.reduce(((e,r)=>e+r),0);if(0!=s){let i,s=0,a=1,p=10;for(;;){for(;f%p==0;)s+=1,a=10**s,p*=10,y[s]+=y[s-1],y[s-1]=0;if(i=y[s],u=65536*o[h]+256*o[h+1]+o[h+2]+i,r.writeSync(t.idxF,Buffer.from(d(u)),0,3,n+h),f+=a,!(e||f<c))break;if(n=f*v,o=m(f,t,v),0==o.length||l(o,h)!=t.f)break}t.difOffs=[i,s]}}else t.difOffs=[y[0],0]}}r.writeFileSync(I,t.idFr.slice(i)),r.close(I,(function(e){})),F(1)}function m(e,t,n){if(e>=t.vId1||e<t.vId0){e!=t.vId?e>=t.vId1?(t.vId1=e+i,t.vId0=t.vId-i):(t.vId0=e-i,t.vId1=t.vId+i):(t.vId1=e+i,t.vId0=e-i),t.vId0<0&&(t.vId0=0);let f=n*(t.vId1-t.vId0);t.chunk=Buffer.alloc(f);let o=r.readSync(t.idxF,t.chunk,0,f,t.vId0*n);o<f&&(t.chunk=t.chunk.slice(0,o))}let f=(e-t.vId0)*n;return t.chunk.slice(f,f+n)}function F(e,r,t,n,i){let f,o,l=1e3,d=t.slice(n,n+l),s=0,c=0,a=0;for(;a<l;){if(255==d[a]){if(s>1)if(s%2)if(o in r){if(e[r[o]]=d.toString("utf-8",f,f+=c),0==--i)break}else f+=c;else o=c;else s?f=l=c+a+1:c+a>d.length&&(d=t.slice(n,c+a));c=0,s++}else c=250*c+d[a];a++}return e}function g(e,r,t,n,i,f,o,l){let d,s,c={...n},a={...f},u=r[0][3],v=1e3,h=r.idFr.slice(u,u+v),p=0,y=0,b=0;for(;b<v;){if(255==h[b]){if(p>1)if(p%2){if(s in t){if(o--,s in i?(a[i[s]]=c[t[s]]=h.toString("utf-8",d,d+=y),o--):c[t[s]]=h.toString("utf-8",d,d+=y),0==o)break}else if(s in i&&(a[i[s]]=h.toString("utf-8",d,d+=y),0==--o))break}else s=y;else p?d=v=y+b+1:y+b>h.length&&(h=r.idFr.slice(u,y+b));y=0,p++}else y=250*y+h[b];b++}var I={};return!!l(e,c,a,I)&&{id:e,...c,get:I}}function S(e,r,t,n){let i,f,o,l,d=[],s={...t},c=e[0][3],a=1e3,u=e.idFr.slice(c,c+a),v=0,h=0,y=0,b=[[],[]];for(;y<a;){if(255==u[y]){if(v>1)if(v%2){if(l in s){if(d[l]=s[l],o+=h,0==--n){f=[u.slice(y+1,a),u.slice(o,i)];break}}else d[l]=[b[0],b[1],u.slice(o,o+=h)];b=[[],[]]}else l=h;else v?o=a=h+y+1:(i=h+y,i>u.length&&(u=e.idFr.slice(c,i)));h=0,v++}else h=250*h+u[y],v>1&&b[v%2].push(u[y]);y++}let I=[],m=[];for(u in d)I=[...I,...d[u][2]],m.push(...d[u][0],255,...d[u][1],255);f&&(I=[...I,...f[1]],m.push(...f[0]));let F=p(250,m.length);o=2+F.length+m.length+I.length,m=[...p(250,o),255,...F,255,...m,...I],r[e.vId]={o:[e[0][2],e[0][3]],ids:m,newLen:m.length,lenId:i}}function x(e,r,t,n,i,f,o,l,d,s){let c,a,u,v,h,y=[],b=r[0][3],I={...i},m={...o},F=1e3,g=r.idFr.slice(b,b+F),S=0,x=0,U=0,w=[[],[]];for(;U<F;){if(255==g[U]){if(S>1)if(S%2){if(c=g.slice(v,v+=x),y[h]=[w[0],w[1],c],h in n){if(d--,h in f?(m[f[h]]=I[n[h]]=c.toString("utf-8"),d--):I[n[h]]=c.toString("utf-8"),0==d){u=[g.slice(U+1,F),g.slice(v,a)];break}}else if(h in f&&(m[f[h]]=c.toString("utf-8"),0==--d)){u=[g.slice(U+1,F),g.slice(v,a)];break}w=[[],[]]}else h=x;else S?v=F=x+U+1:(a=x+U,a>g.length&&(g=r.idFr.slice(b,a)));x=0,S++}else x=250*x+g[U],S>1&&w[S%2].push(g[U]);U++}if(s(e,I,m)){let e,n=[],i=[];for(g in I)g in l&&(e=Buffer.from(I[g].toString()),y[l[g][1]]=[l[g][0],p(250,e.length),e]);for(g in y)n=[...n,...y[g][2]],i.push(...y[g][0],255,...y[g][1],255);u&&(n=[...n,...u[1]],i.push(...u[0]));let f=p(250,i.length);v=2+f.length+i.length+n.length,i=[...p(250,v),255,...f,255,...i,...n],t[r.vId]={o:[r[0][2],r[0][3]],ids:i,newLen:i.length,lenId:a}}}function U(e,r,t,n){let i=e[0][3],f=e.idFr.slice(i,i+20),o=0,l=0;for(;255!=f[o];)l=250*l+f[o],o++;r[e.vId]={o:[e[0][2],e[0][3]],ids:t,newLen:n,lenId:l+o}}function w(e,r,t,n,i,f,o,l,d,s){let c,a,u,v,h=[],y=r[0][3],b={...i},I={...o},m=1e3,F=r.idFr.slice(y,y+m),g=0,S=0,x=0,U=[[],[]];for(;x<m;){if(255==F[x]){if(g>1)if(g%2){if(c=F.slice(u,u+=S),v in n){if(h[v]=[U[0],U[1],c],d--,v in f?(I[f[v]]=b[n[v]]=c.toString("utf-8"),d--):b[n[v]]=c.toString("utf-8"),0==d)break}else if(v in f&&(I[f[v]]=c.toString("utf-8"),0==--d))break;U=[[],[]]}else v=S;else g?u=m=S+x+1:(a=S+x,a>F.length&&(F=r.idFr.slice(y,a)));S=0,g++}else S=250*S+F[x],g>1&&U[g%2].push(F[x]);x++}if(s(e,b,I)){let e,n=[],i=[];for(F in b)F in l&&(e=Buffer.from(b[F].toString()),h[l[F][1]]=[l[F][0],p(250,e.length),e]);for(F in h)n=[...n,...h[F][2]],i.push(...h[F][0],255,...h[F][1],255);let f=p(250,i.length);u=2+f.length+i.length+n.length,i=[...p(250,u),255,...f,255,...i,...n],t[r.vId]={o:[r[0][2],r[0][3]],ids:i,newLen:i.length,lenId:a}}}function O(e,r){let t=e[0][3],n=e.idFr.slice(t,t+20),i=0,f=0;for(;255!=n[i];)f=250*f+n[i],i++;r[e.vId]={o:[e[0][2],e[0][3]],lenId:f+i}}function j(e,r,t,n,i,f,o,l){let d,s,c,a=r[0][3],u={...i},v=1e3,h=r.idFr.slice(a,a+v),p=0,y=0,b=0;for(;b<v;){if(255==h[b]){if(p>1)if(p%2)if(c in n){if(u[n[c]]=h.toString("utf-8",s,s+=y),0==--o)break}else s+=y;else c=y;else p?s=v=y+b+1:(d=y+b,d>h.length&&(h=r.idFr.slice(a,d)));y=0,p++}else y=250*y+h[b];b++}l(e,u)&&(t[r.vId]={o:[r[0][2],r[0][3]],lenId:d})}function k(e,t,n){let i,f=n.vId,o=n.b,d=n.s;if(f>0)i=m(f,n,d);else{if(1==o)return void(n.r=0);n.b-=1,o=n.b,d=n.s=o+3,r.close(n.idxF,(function(e){})),n.idxF=r.openSync(e+o+".hoc","r"),f=n.vId=n.vId1=n.vl[o+1]-n.vl[o],i=m(f,n,d)}if(0==i.length){if(n.vl.length-1==o)return void(n.r=0);n.b+=1,o=n.b,d=n.s=o+3,r.close(n.idxF,(function(e){})),n.idxF=r.openSync(e+o+".hoc","r"),f=n.vId=n.vId1=1,i=m(f,n,d)}let s=l(i,o);if(255==(127|i[0]))return void(n[0]=0);let c,a=65536*i[o]+256*i[o+1]+i[o+2];if(s!=n.f)for(n.f=s,n.idFr=r.readFileSync(t+s+".txt"),c=1;n[c];)n[c]=null,c++;{let e,r=f%10;for(n[0]=0==r?[f,s,a,0]:[f,s,a,a],f=(f-r)/10,c=0;f;){if(c++,e=f*10**c,r=f%10,n[c]&&n[c][0]==e){n[c][1]!=n.f&&c--;break}if(i=m(e,n,d),s=l(i,o),a=65536*i[o]+256*i[o+1]+i[o+2],s!=n.f){c--;break}n[c]=0==r?[e,s,a,0]:[e,s,a,a],f=(f-r)/10}for(;c;)n[c-1][3]+=n[c][3],c-=1}}function N(e,t,n,i){let f,o=n.vId,d=n.b,s=n.s;if(o>0)f=m(o,n,s);else{let l;if(0!=(l=Object.keys(i.rUpd).length)&&(i.del?I(t,n,i.rUpd):b(t,n,i.rUpd),i.len_rUpd+=l,i.rUpd={}),1==d)return void(n.r=0);n.b-=1,d=n.b,s=n.s=d+3,r.close(n.idxF,(function(e){})),n.idxF=r.openSync(e+d+".hoc","r+"),o=n.vId=n.vId1=n.vl[d+1]-n.vl[d],f=m(o,n,s)}if(0==f.length){let l;if(0!=(l=Object.keys(i.rUpd).length)&&(i.del?I(t,n,i.rUpd):b(t,n,i.rUpd),i.len_rUpd+=l,i.rUpd={}),n.vl.length-1==d)return void(n.r=0);n.b+=1,d=n.b,s=n.s=d+3,r.close(n.idxF,(function(e){})),n.idxF=r.openSync(e+d+".hoc","r+"),o=n.vId=n.vId1=1,f=m(o,n,s)}let c=l(f,d);if(255==(127|f[0]))return void(n[0]=0);let a,u=65536*f[d]+256*f[d+1]+f[d+2];if(c!=n.f){let e;for(0!=(e=Object.keys(i.rUpd).length)&&(i.del?I(t,n,i.rUpd):b(t,n,i.rUpd),i.len_rUpd+=e,i.rUpd={}),n.xf=f.slice(0,d),n.f=c,n.idFr=r.readFileSync(t+n.f+".txt"),a=1;n[a];)n[a]=null,a++}{let e,t=o%10;for(n[0]=0==t?[o,c,u,0]:[o,c,u,u],o=(o-t)/10,a=0;o;){if(a++,e=o*10**a,t=o%10,n[a]&&n[a][0]==e){n[a][1]!=n.f&&a--;break}if(f=m(e,n,s),0==f.length&&(f=Buffer.alloc(s),r.readSync(n.idxF,f,0,s,e*s)),c=l(f,d),u=65536*f[d]+256*f[d+1]+f[d+2],c!=n.f){a--;break}n[a]=0==t?[e,c,u,0]:[e,c,u,u],o=(o-t)/10}for(;a;)n[a-1][3]+=n[a][3],a-=1}}function T(e,t,n,i){let f={};if("string"!=typeof t)return{error:"The 1st parameter 'table' must be 'string'"};if(f.pathTb=`${e}/${t}`,!r.existsSync(f.pathTb))return{error:"This table not found.."};if(!Array.isArray(n))return{error:" The 3rd ids must a array .. "};if(n.some((function(e){return!Number.isInteger(e)})))return{error:"all Id array items must a number"};if(!Number.isInteger(i))return{error:"The 4th argument (lim) must a number"};if(i<0)return{error:"The 2nd argument (lim) ​​must be equal to or greater than zero"};let o=h(f.pathTb),[l,d]=o,s=d[0];return Math.min(...n)<1||s<Math.max(...n)?{error:"all Id array items must be between 1 and "+(s+1)}:(f={...f,vlsp:o,vl:l,ifl:d},f)}function D(e,t,n,i,f){let o={};if("string"!=typeof t)return{error:"The 1st parameter 'table' must be 'string'"};if(o.pathTb=`${e}/${t}`,!r.existsSync(o.pathTb))return{error:"This table not found.."};if(!Number.isInteger(n))return{error:"The 2nd argument (Id) must a number"};if(n<0)return{error:"The 2nd argument (Id) ​​must be equal to or greater than zero"};if(Number.isInteger(i)&&i)o.offsNum=!0;else{if("string"!=typeof i||"+"!=i&&"-"!=i)return{error:'The 3rd argument (offs) must be greater or less than 0 or this "+" or "-" character'};o.offsNum=!1}if(!Number.isInteger(f))return{error:"The 4th argument (lim) must a number"};if(f<0)return{error:"The 2nd argument (lim) ​​must be equal to or greater than zero"};let l=h(o.pathTb),[d,s]=l,c=s[0];return 0==n&&(n=c),c<n?{error:"The Id must be between 1 and "+(c+1)}:(o={...o,vlsp:l,vl:d,ifl:s,id_:n,lastId:c},o)}this.createDataBase=function(t){let n=Date.now();if("string"!=typeof t)return{error:"The 1st parameter 'db' must be 'string'"};t=o(t,"/");let i="";for(let n of t)i+=n,s(i)||r.mkdirSync(e.join(i,"")),i+="/";return{time:Date.now()-n+" ms",statement:!0}},this.createTable=function(e,t=!1,n=[],i=[]){let f=Date.now();if("string"!=typeof e)return{error:"The 1st parameter 'db' must be 'string'"};if("string"!=typeof t)return{error:"The 2nd parameter 'table' must be 'string'"};if(!s(e))return{error:"This database not found .."};const o=`${e}/${t}`;if(s(o))return{error:"This table exists .."};{if(!Array.isArray(n))return{error:"The 3rd parameter 'clmn' must a array .. "};if(!Array.isArray(i))return{error:"The 4th parameter 'dflt' must a array .. "};r.mkdirSync(o),r.mkdirSync(o+"/d"),r.mkdirSync(o+"/i");const e="0|1\n0|0|0|0\n0|0|0|0|0|0|0|0|0|0|0";r.writeFileSync(o+"/i/ref.txt",e);const t=Buffer.alloc(4," ");if(r.writeFileSync(o+"/i/i1.hoc",t),0!=n.length)!function(e,t,n){var i=r.openSync(e+"/i/refCol.txt","w"),f={},o=n.length;let l,d,s=t.length,c=0;for(;c<s;c++)l=t[c],d=c<o?n[c].toString():"",f[l]=[c,d];r.writeSync(i,c+","+JSON.stringify(f)),r.closeSync(i)}(o,n,i);else{const e="0,{}";r.writeFileSync(o+"/i/refCol.txt",e)}r.writeFileSync(o+"/d/b0.txt","")}return{time:Date.now()-f+" ms",statement:!0}},this.connectDB=function(e){var i=`${n}/${e}`;return"string"!=typeof e?{error:"The 1st parameter 'db' must be 'string'"}:r.existsSync(i)?new class{constructor(){}addColumn=function(e,t=[],n=[]){let f=Date.now();if("string"!=typeof e)return{error:"The 1st parameter 'table' must be 'string'"};let l=t.length;if(l){let f=`${i}/${e}`;if(!r.existsSync(f))return{error:"This table not found.."};let d,s,c=o(r.readFileSync(f+"/i/refCol.txt","utf8"),",",1),a=Number(c[0]),u=JSON.parse(c[1]),v=n.length,h=0;for(;h<l;h++){if(d=t[h],d in u)return{error:'The column ("'+d+'") already exists'};s=h<v?n[h].toString():"",u[d]=[a+h,s]}r.writeFileSync(f+"/i/refCol.txt",a+h+","+JSON.stringify(u))}return{time:Date.now()-f+" ms",statement:!0}};idIsLife=function(e,t){let n=Date.now();if("string"!=typeof e)return{time:Date.now()-n+" ms",error:"The 1st parameter 'table' must be 'string'"};let f=`${i}/${e}`;if(!r.existsSync(f))return{time:Date.now()-n+" ms",error:"This table not found.."};let[o,l]=h(f),d=l[0];if(t<1||d<t)return{error:"The Id must be between 1 and "+(d+1)};let s=o.length;for(var c=2;c<s&&!(t<o[c]);c++);let a=(c-=1)+3,u=t-o[c]+1,v=r.openSync(f+"/i/i"+c+".hoc","r"),p=Buffer.alloc(1);return 0!=r.readSync(v,p,0,1,u*a)&&255!=(127|p[0])?{time:Date.now()-n+" ms",count:1}:{time:Date.now()-n+" ms",count:0}};lastId=function(e){let t=Date.now();if("string"!=typeof e)return{error:"The 1st parameter 'table' must be 'string'"};let n=`${i}/${e}`;if(!r.existsSync(n))return{error:"This table not found.."};let[,f]=h(n),o=f[0];return{time:Date.now()-t+" ms",lastId:o}};insert=function(e,t,n){let o=Date.now();var{error:l,pathTb:s,ca:c,clmnL:u}=a(i,e,t);if(l)return l;if(!Array.isArray(n))return{error:" Values must a array .. "};if(u!=n.length)return{error:" Incorrect number of values: Column ("+u+") and Values ("+n.length+") sizes don't match "};let[v,y,b]=h(s),I=v.length-1,m=2**(8*I-1),F=y[0],g=y[0]-y[1],S=y[1]+1,x=y[2],U=y[3],w=x,O=[127&w];for(w>>=7;w>0;)O.push(255&w),w>>=8;var j,k,N,T=[],D=[],C={},_=r.openSync(s+`/d/b${x}.txt`,"a"),B=r.openSync(s+`/i/i${I}.hoc`,"a");let $,A,V,J,L;for($=0;$<u;$++)N=Buffer.from(n[$].toString()),C[c[$][0]]=[c[$][1],p(250,N.length),N];for($ in C)T=[...T,...C[$][2]],D.push(...C[$][0],255,...C[$][1],255);for(L=p(250,D.length),J=p(250,k=2+L.length+D.length+T.length),A=S,V=0;A%10==0;)V+=1,b[V]=U,A/=10;if(j=U-b[V+1],r.writeFileSync(_,Buffer.from([...J,255,...L,255,...D,...T])),r.writeFileSync(B,Buffer.from([...O,...d(j)])),U+=J.length+k,U>f){for(x+=1,U=0,b=[0,0,0,0,0,0,0,0,0,0,0],x%m==0&&(g+=S,S=0,I+=1,m=2**(8*I-1),v.push(g+1),r.close(B,(function(e){})),B=r.openSync(s+`/i/i${I}.hoc`,"a"),r.writeFileSync(B,Buffer.alloc(I+3," "))),w=x,O=[127&w],w>>=7;w>0;)O.push(255&w),w>>=8;r.close(_,(function(e){})),_=openSync(s+"/d/b"+x+".txt","wb")}return r.close(B,(function(e){})),r.close(_,(function(e){})),g+=S,g!=F&&r.writeFileSync(s+"/i/ref.txt",v.join("|")+"\n"+g+"|"+S+"|"+x+"|"+U+"\n"+b.join("|")),{time:Date.now()-o+" ms",count:1,id:g}};insertMany=function(e,t,n){let o=Date.now();var l,{error:s,pathTb:c,ca:u,clmnL:v}=a(i,e,t);if(s)return s;if(!Array.isArray(n)||0==(l=n.length))return{error:" Values must a Two-dimensional array .. "};let[y,b,I]=h(c),m=y.length-1,F=2**(8*m-1),g=b[0],S=b[0]-b[1],x=b[1],U=b[2],w=b[3],O=U,j=[127&O];for(O>>=7;O>0;)j.push(255&O),O>>=8;for(var k,N=0;N<l;N++){if(k=n[N],!Array.isArray(k))return{error:" Values must a Two-dimensional array .. "};if(k.length!=v)return{error:" Incorrect number of values: Column ("+v+") and Values ("+k.length+") sizes don't match "};var T,D,C,_,B,$,A=r.openSync(c+`/d/b${U}.txt`,"a"),V=r.openSync(c+`/i/i${m}.hoc`,"a");let e,t,i,o,l;for(x+=1,_=[],B=[],$={},e=0;e<v;e++)D=Buffer.from(k[e].toString()),$[u[e][0]]=[u[e][1],p(250,D.length),D];for(e in $)_=[..._,...$[e][2]],B.push(...$[e][0],255,...$[e][1],255);for(l=p(250,B.length),o=p(250,C=2+l.length+B.length+_.length),t=x,i=0;t%10==0;)i+=1,I[i]=w,t/=10;if(T=w-I[i+1],r.writeFileSync(A,Buffer.from([...o,255,...l,255,...B,..._])),r.writeFileSync(V,Buffer.from([...j,...d(T)])),w+=o.length+C,w>f){for(U+=1,w=0,I=[0,0,0,0,0,0,0,0,0,0,0],U%F==0&&(S+=x,x=0,m+=1,F=2**(8*m-1),y.push(S+1),r.close(V,(function(e){})),V=r.openSync(c+`/i/i${m}.hoc`,"a"),r.writeFileSync(V,Buffer.alloc(m+3," "))),O=U,j=[127&O],O>>=7;O>0;)j.push(255&O),O>>=8;r.close(A,(function(e){})),A=r.openSync(c+`/d/b${U}.txt`,"a")}}return S+=x,r.close(V,(function(e){})),r.close(A,(function(e){})),S!=g&&r.writeFileSync(c+"/i/ref.txt",y.join("|")+"\n"+S+"|"+x+"|"+U+"|"+w+"\n"+I.join("|")),{time:Date.now()-o+" ms",count:S-g,id:S}};insertCsv=function(e,n,o,l={}){var{error:s,pathTb:c,ca:u,clmnL:v}=a(i,e,o);if(s)return s;if("string"!=typeof n)return{error:"The 2nd parameter file path 'csvFP' must be 'string'"};if("object"!=typeof l)return{error:"The 4th parameter 'option' must be 'object'"};l.json=!1;const y=t(n,l);function b(e){return function(...t){let n,i,o,l=Date.now(),[s,a,b]=h(c),I=s.length-1,m=2**(8*I-1),F=a[0],g=a[0]-a[1],S=a[1],x=a[2],U=a[3],w=x,O=[127&w];for(w>>=7;w>0;)O.push(255&w),w>>=8;if(n="chunk"==e?y.chunk(...t):y.rowOffset(...t),n.row_count&&(i=n.rows),!Array.isArray(i))return{error:" Incorrect CSV format: rows must be an array "};if(0==(o=i.length))return{error:" CSV file rows are empty, no data is displayed "};var j,k,N,T,D,C,_=r.openSync(c+`/d/b${x}.txt`,"a"),B=r.openSync(c+`/i/i${I}.hoc`,"a");for(var $,A=0;A<o;A++){if($=i[A],!Array.isArray($))return{error:" Incorrect CSV Format. Number of headers and the number of values in each row must be equal "};if($.length!=v)return{error:" Incorrect number of columns: Header ("+v+") and Row ("+$.length+") sizes don't match "};let e,t,n,o,l;for(S+=1,T=[],D=[],C={},e=0;e<v;e++)k=Buffer.from($[e].toString()),C[u[e][0]]=[u[e][1],p(250,k.length),k];for(e in C)T=[...T,...C[e][2]],D.push(...C[e][0],255,...C[e][1],255);for(l=p(250,D.length),o=p(250,N=2+l.length+D.length+T.length),t=S,n=0;t%10==0;)n+=1,b[n]=U,t/=10;if(j=U-b[n+1],r.writeFileSync(_,Buffer.from([...o,255,...l,255,...D,...T])),r.writeFileSync(B,Buffer.from([...O,...d(j)])),U+=o.length+N,U>f){for(x+=1,U=0,b=[0,0,0,0,0,0,0,0,0,0,0],x%m==0&&(g+=S,S=0,I+=1,m=2**(8*I-1),s.push(g+1),r.close(B,(function(e){})),B=r.openSync(c+`/i/i${I}.hoc`,"a"),r.writeFileSync(B,Buffer.alloc(I+3," "))),w=x,O=[127&w],w>>=7;w>0;)O.push(255&w),w>>=8;r.close(_,(function(e){})),_=r.openSync(c+`/d/b${x}.txt`,"a")}}return g+=S,r.close(B,(function(e){})),r.close(_,(function(e){})),g!=F&&r.writeFileSync(c+"/i/ref.txt",s.join("|")+"\n"+g+"|"+S+"|"+x+"|"+U+"\n"+b.join("|")),{time:Date.now()-l+" ms",count:g-F,id:g}}}return new class{constructor(){}chunk=b("chunk");rowOffset=b("rowOffset")}};select=function(e,t,n,f,d="*"){let s=Date.now();var{error:a,pathTb:u,offsNum:v,vlsp:h,vl:p,ifl:y,id_:t,lastId:b}=D(i,e,t,n,f);if(a)return{error:a};let I=r.readFileSync(u+"/i/refCol.txt","utf8"),g=JSON.parse(o(I,",",1)[1]);var{error:a,colN:S,colval:x}=c(g,d,"colN","colval");if(a)return{error:a};let U=Object.keys(S).length;var w=[];let O=p.length;for(var j=2;j<O&&!(t<p[j]);j++);let N=t-p[j-=1]+1;var T={b:j,s:j+3,vl:p,vId:N,vId1:N,vId0:N,r:1};let C=u+"/i/i",_=u+"/d/b";T.idxF=r.openSync(C+T.b+".hoc","r");let B=m(N,T,T.s);if(T.f=l(B,j),T.idFr=r.readFileSync(_+T.f+".txt"),v)if(n>0)if(f)for(k(C,_,T);n&&T.r&&(!T[0]||(w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),--f));)n-=1,t+=1,T.vId+=1,k(C,_,T);else for(k(C,_,T);n&&T.r;)T[0]&&w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),n-=1,t+=1,T.vId+=1,k(C,_,T);else if(f)for(k(C,_,T);n&&T.r&&(!T[0]||(w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),--f));)n+=1,t-=1,T.vId-=1,k(C,_,T);else for(k(C,_,T);n&&T.r;)T[0]&&w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),n+=1,t-=1,T.vId-=1,k(C,_,T);else if("+"==n)if(f)for(k(C,_,T);T.r&&(!T[0]||(w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),--f));)t+=1,T.vId+=1,k(C,_,T);else for(k(C,_,T);T.r;)T[0]&&w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),t+=1,T.vId+=1,k(C,_,T);else if(f)for(k(C,_,T);T.r&&(!T[0]||(w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),--f));)t-=1,T.vId-=1,k(C,_,T);else for(k(C,_,T);T.r;)T[0]&&w.push(F({id:t,...x},S,T.idFr,T[0][3],U)),t-=1,T.vId-=1,k(C,_,T);return{time:Date.now()-s+" ms",count:w.length,rows:w}};selectIn=function(e,t,n,f="*"){let d=Date.now();var{error:s,pathTb:a,vlsp:u,vl:v,ifl:h}=T(i,e,t,n);if(s)return{error:s};let p=r.readFileSync(a+"/i/refCol.txt","utf8"),y=JSON.parse(o(p,",",1)[1]);var{error:s,colN:b,colval:I}=c(y,f,"colN","colval");if(s)return{error:s};let g=Object.keys(b).length;var S=[];let x=a+"/i/i",U=a+"/d/b";var w,O=3,j=1,N=0,D={vl:v,r:1};let C;if(D.idxF=r.openSync(x+1+".hoc","r"),n)for(var _ of t){if(v[j]&&v[j]<=_){for(N+=1;v[N]&&v[N]<=_;)N++;j=N,N-=1,D.b=N,r.close(D.idxF,(function(e){})),D.idxF=r.openSync(x+N+".hoc","r"),w=D.vId=D.vId1=_-v[N]+1,O=D.s=N+3,C=m(w,D,O),D.f=l(C,N),D.idFr=r.readFileSync(U+D.f+".txt")}else w=D.vId=_-v[N]+1;if(k(x,U,D),D[0]&&S.push(F({id:_,...I},b,D.idFr,D[0][3],g)),0==--n)break}else for(var _ of t){if(v[j]&&v[j]<=_){for(N+=1;v[N]&&v[N]<=_;)N++;j=N,N-=1,D.b=N,r.close(D.idxF,(function(e){})),D.idxF=r.openSync(x+N+".hoc","r"),w=D.vId=D.vId1=_-v[N]+1,O=D.s=N+3,C=m(w,D,O),D.f=l(C,N),D.idFr=r.readFileSync(U+D.f+".txt")}else w=D.vId=_-v[N]+1;k(x,U,D),D[0]&&S.push(F({id:_,...I},b,D.idFr,D[0][3],g))}return r.close(D.idxF,(function(e){})),{time:Date.now()-d+" ms",count:S.length,rows:S}};search=function(e,t,n,f,d="*",s="*",a=y){let u=Date.now();var{error:v,pathTb:h,offsNum:p,vlsp:b,vl:I,ifl:F,id_:t,lastId:S}=D(i,e,t,n,f);if(v)return{error:v};let x=r.readFileSync(h+"/i/refCol.txt","utf8"),U=JSON.parse(o(x,",",1)[1]);var{error:v,colN:w,colval:O}=c(U,d,"colN","colval");if(v)return{error:v};var{error:v,colCN:j,colCV:N}=c(U,s,"colCN","colCV");if(v)return{error:v};let T=Object.keys(w).length+Object.keys(j).length;var C,_=[];let B=I.length;for(var $=2;$<B&&!(t<I[$]);$++);let A=t-I[$-=1]+1;var V={b:$,s:$+3,vl:I,vId:A,vId1:A,vId0:A,r:1};let J=h+"/i/i",L=h+"/d/b";V.idxF=r.openSync(J+V.b+".hoc","r");let q=m(A,V,V.s);if(V.f=l(q,$),V.idFr=r.readFileSync(L+V.f+".txt"),p)if(n>0)if(f)for(k(J,L,V);n&&V.r&&(!V[0]||!(C=g(t,V,w,O,j,N,T,a))||(_.push(C),--f));)n-=1,t+=1,V.vId+=1,k(J,L,V);else for(k(J,L,V);n&&V.r;)V[0]&&(C=g(t,V,w,O,j,N,T,a))&&_.push(C),n-=1,t+=1,V.vId+=1,k(J,L,V);else if(f)for(k(J,L,V);n&&V.r&&(!V[0]||!(C=g(t,V,w,O,j,N,T,a))||(_.push(C),--f));)n+=1,t-=1,V.vId-=1,k(J,L,V);else for(k(J,L,V);n&&V.r;)V[0]&&(C=g(t,V,w,O,j,N,T,a))&&_.push(C),n+=1,t-=1,V.vId-=1,k(J,L,V);else if("+"==n)if(f)for(k(J,L,V);V.r&&(!V[0]||!(C=g(t,V,w,O,j,N,T,a))||(_.push(C),--f));)t+=1,V.vId+=1,k(J,L,V);else for(k(J,L,V);V.r;)V[0]&&(C=g(t,V,w,O,j,N,T,a))&&_.push(C),t+=1,V.vId+=1,k(J,L,V);else if(f)for(k(J,L,V);V.r&&(!V[0]||!(C=g(t,V,w,O,j,N,T,a))||(_.push(C),--f));)t-=1,V.vId-=1,k(J,L,V);else for(k(J,L,V);V.r;)V[0]&&(C=g(t,V,w,O,j,N,T,a))&&_.push(C),t-=1,V.vId-=1,k(J,L,V);return r.close(V.idxF,(function(e){})),{time:Date.now()-u+" ms",count:_.length,rows:_}};searchIn=function(e,t,n,f="*",d="*",s=y){let a=Date.now();var{error:u,pathTb:v,vlsp:h,vl:p,ifl:b}=T(i,e,t,n);if(u)return{error:u};let I=r.readFileSync(v+"/i/refCol.txt","utf8"),F=JSON.parse(o(I,",",1)[1]);var{error:u,colN:S,colval:x}=c(F,f,"colN","colval");if(u)return{error:u};var{error:u,colCN:U,colCV:w}=c(F,d,"colCN","colCV");if(u)return{error:u};let O=Object.keys(S).length+Object.keys(U).length;var j,N=[];let D=v+"/i/i",C=v+"/d/b";var _,B=3,$=1,A=0,V={vl:p,r:1};let J;if(V.idxF=r.openSync(D+1+".hoc","r"),n)for(var L of t){if(p[$]&&p[$]<=L){for(A+=1;p[A]&&p[A]<=L;)A++;$=A,A-=1,V.b=A,r.close(V.idxF,(function(e){})),V.idxF=r.openSync(D+A+".hoc","r"),_=V.vId=V.vId1=L-p[A]+1,B=V.s=A+3,J=m(_,V,B),V.f=l(J,A),V.idFr=r.readFileSync(C+V.f+".txt")}else _=V.vId=L-p[A]+1;if(k(D,C,V),V[0]&&(j=g(L,V,S,x,U,w,O,s))&&N.push(j),0==--n)break}else for(var L of t){if(p[$]&&p[$]<=L){for(A+=1;p[A]&&p[A]<=L;)A++;$=A,A-=1,V.b=A,r.close(V.idxF,(function(e){})),V.idxF=r.openSync(D+A+".hoc","r"),_=V.vId=V.vId1=L-p[A]+1,B=V.s=A+3,J=m(_,V,B),V.f=l(J,A),V.idFr=r.readFileSync(C+V.f+".txt")}else _=V.vId=L-p[A]+1;k(D,C,V),V[0]&&(j=g(L,V,S,x,U,w,O,s))&&N.push(j)}return r.close(V.idxF,(function(e){})),{time:Date.now()-a+" ms",count:N.length,rows:N}};update=function(e,t,n,f,o,d){let s=Date.now();var{error:c,pathTb:a,offsNum:v,vlsp:h,vl:p,ifl:y,id_:t,lastId:I}=D(i,e,t,n,f);if(c)return{error:c};var{error:c,setV:F}=u(a,o,d);if(c)return c;let g=Object.keys(F).length;var x={rUpd:{},len_rUpd:0};let U=p.length;for(var w=2;w<U&&!(t<p[w]);w++);let O=t-p[w-=1]+1;var j={b:w,s:w+3,vl:p,vId:O,vId1:O,vId0:O,r:1};let k=a+"/i/i",T=a+"/d/b";j.idxF=r.openSync(k+j.b+".hoc","r+");let C,_=m(O,j,j.s);if(j.f=l(_,w),j.idFr=r.readFileSync(T+j.f+".txt"),v)if(n>0)if(f)for(N(k,T,j,x);n&&j.r&&(!j[0]||(S(j,x.rUpd,F,g),--f));)n-=1,t+=1,j.vId+=1,N(k,T,j,x);else for(N(k,T,j,x);n&&j.r;)j[0]&&S(j,x.rUpd,F,g),n-=1,t+=1,j.vId+=1,N(k,T,j,x);else if(f)for(N(k,T,j,x);n&&j.r&&(!j[0]||(S(j,x.rUpd,F,g),--f));)n+=1,t-=1,j.vId-=1,N(k,T,j,x);else for(N(k,T,j,x);n&&j.r;)j[0]&&S(j,x.rUpd,F,g),n+=1,t-=1,j.vId-=1,N(k,T,j,x);else if("+"==n)if(f)for(N(k,T,j,x);j.r&&(!j[0]||(S(j,x.rUpd,F,g),--f));)t+=1,j.vId+=1,N(k,T,j,x);else for(N(k,T,j,x);j.r;)j[0]&&S(j,x.rUpd,F,g),t+=1,j.vId+=1,N(k,T,j,x);else if(f)for(N(k,T,j,x);j.r&&(!j[0]||(S(j,x.rUpd,F,g),--f));)t-=1,j.vId-=1,N(k,T,j,x);else for(N(k,T,j,x);j.r;)j[0]&&S(j,x.rUpd,F,g),t-=1,j.vId-=1,N(k,T,j,x);if(0!=(C=Object.keys(x.rUpd).length)&&(b(T,j,x.rUpd),x.len_rUpd+=C),r.close(j.idxF,(function(e){})),y[2]==j.f&&j.difOffs){let e=h[2],t=1;for(;t<=j.difOffs[1];)e[t]+=j.difOffs[0],t+=1;let n=h[1];n[3]=n[3]+j.difOffs[0],r.writeFileSync(a+"/i/ref.txt",h[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-s+" ms",count:x.len_rUpd}};updateIn=function(e,t,n,f,o){let d=Date.now();var{error:s,pathTb:c,vlsp:a,vl:v,ifl:h}=T(i,e,t,n);if(s)return{error:s};var{error:s,setV:p}=u(c,f,o);if(s)return s;let y=Object.keys(p).length;var I={rUpd:{},len_rUpd:0};let F=c+"/i/i",g=c+"/d/b";var x,U=3,w=1,O=0,j={vl:v,r:1};let k,D;if(j.idxF=r.openSync(F+1+".hoc","r+"),n)for(var C of t){if(v[w]&&v[w]<=C){for(O+=1;v[O]&&v[O]<=C;)O++;w=O,O-=1,j.b=O,r.close(j.idxF,(function(e){})),j.idxF=r.openSync(F+O+".hoc","r+"),x=j.vId=j.vId1=C-v[O]+1,U=j.s=O+3,k=m(x,j,U),j.f=l(k,O),j.idFr=r.readFileSync(g+j.f+".txt")}else x=j.vId=C-v[O]+1;if(N(F,g,j,I),j[0]&&S(j,I.rUpd,p,y),0==--n)break}else for(var C of t){if(v[w]&&v[w]<=C){for(O+=1;v[O]&&v[O]<=C;)O++;w=O,O-=1,j.b=O,r.close(j.idxF,(function(e){})),j.idxF=r.openSync(F+O+".hoc","r+"),x=j.vId=j.vId1=C-v[O]+1,U=j.s=O+3,k=m(x,j,U),j.f=l(k,O),j.idFr=r.readFileSync(g+j.f+".txt")}else x=j.vId=C-v[O]+1;N(F,g,j,I),j[0]&&S(j,I.rUpd,p,y)}if(0!=(D=Object.keys(I.rUpd).length)&&(b(g,j,I.rUpd),I.len_rUpd+=D),r.close(j.idxF,(function(e){})),h[2]==j.f&&j.difOffs){let e=a[2],t=1;for(;t<=j.difOffs[1];)e[t]+=j.difOffs[0],t+=1;let n=a[1];n[3]=n[3]+j.difOffs[0],r.writeFileSync(c+"/i/ref.txt",a[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-d+" ms",count:I.len_rUpd}};updateIf=function(e,t,n,f,d,s="*",a=y){let u=Date.now();var{error:h,pathTb:p,offsNum:I,vlsp:F,vl:g,ifl:S,id_:t,lastId:U}=D(i,e,t,n,f);if(h)return{error:h};let w=r.readFileSync(p+"/i/refCol.txt","utf8"),O=JSON.parse(o(w,",",1)[1]);var{error:h,colN:j,colval:k,cn:T}=v(O,d);if(h)return{error:h};var{error:h,colCN:C,colCV:_}=c(O,s,"colCN","colCV");if(h)return{error:h};let B=Object.keys(j).length+Object.keys(C).length;var $={rUpd:{},len_rUpd:0};let A=g.length;for(var V=2;V<A&&!(t<g[V]);V++);let J=t-g[V-=1]+1;var L={b:V,s:V+3,vl:g,vId:J,vId1:J,vId0:J,r:1};let q=p+"/i/i",z=p+"/d/b";L.idxF=r.openSync(q+L.b+".hoc","r+");let M,H=m(J,L,L.s);if(L.f=l(H,V),L.idFr=r.readFileSync(z+L.f+".txt"),I)if(n>0)if(f)for(N(q,z,L,$);n&&L.r&&(!L[0]||(x(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)n-=1,t+=1,L.vId+=1,N(q,z,L,$);else for(N(q,z,L,$);n&&L.r;)L[0]&&x(t,L,$.rUpd,j,k,C,_,T,B,a),n-=1,t+=1,L.vId+=1,N(q,z,L,$);else if(f)for(N(q,z,L,$);n&&L.r&&(!L[0]||(x(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)n+=1,t-=1,L.vId-=1,N(q,z,L,$);else for(N(q,z,L,$);n&&L.r;)L[0]&&x(t,L,$.rUpd,j,k,C,_,T,B,a),n+=1,t-=1,L.vId-=1,N(q,z,L,$);else if("+"==n)if(f)for(N(q,z,L,$);L.r&&(!L[0]||(x(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)t+=1,L.vId+=1,N(q,z,L,$);else for(N(q,z,L,$);L.r;)L[0]&&x(t,L,$.rUpd,j,k,C,_,T,B,a),t+=1,L.vId+=1,N(q,z,L,$);else if(f)for(N(q,z,L,$);L.r&&(!L[0]||(x(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)t-=1,L.vId-=1,N(q,z,L,$);else for(N(q,z,L,$);L.r;)L[0]&&x(t,L,$.rUpd,j,k,C,_,T,B,a),t-=1,L.vId-=1,N(q,z,L,$);if(0!=(M=Object.keys($.rUpd).length)&&(b(z,L,$.rUpd),$.len_rUpd+=M),r.close(L.idxF,(function(e){})),S[2]==L.f&&L.difOffs){let e=F[2],t=1;for(;t<=L.difOffs[1];)e[t]+=L.difOffs[0],t+=1;let n=F[1];n[3]=n[3]+L.difOffs[0],r.writeFileSync(p+"/i/ref.txt",F[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-u+" ms",count:$.len_rUpd}};updateInIf=function(e,t,n,f,d="*",s=y){let a=Date.now();var{error:u,pathTb:h,vlsp:p,vl:I,ifl:F}=T(i,e,t,n);if(u)return{error:u};let g=r.readFileSync(h+"/i/refCol.txt","utf8"),S=JSON.parse(o(g,",",1)[1]);var{error:u,colN:U,colval:w,cn:O}=v(S,f);if(u)return{error:u};var{error:u,colCN:j,colCV:k}=c(S,d,"colCN","colCV");if(u)return{error:u};let D=Object.keys(U).length+Object.keys(j).length;var C={rUpd:{},len_rUpd:0};let _=h+"/i/i",B=h+"/d/b";var $,A=3,V=1,J=0,L={vl:I,r:1};let q,z;if(L.idxF=r.openSync(_+1+".hoc","r+"),n)for(var M of t){if(I[V]&&I[V]<=M){for(J+=1;I[J]&&I[J]<=M;)J++;V=J,J-=1,L.b=J,r.close(L.idxF,(function(e){})),L.idxF=r.openSync(_+J+".hoc","r+"),$=L.vId=L.vId1=M-I[J]+1,A=L.s=J+3,q=m($,L,A),L.f=l(q,J),L.idFr=r.readFileSync(B+L.f+".txt")}else $=L.vId=M-I[J]+1;if(N(_,B,L,C),L[0]&&x(M,L,C.rUpd,U,w,j,k,O,D,s),0==--n)break}else for(var M of t){if(I[V]&&I[V]<=M){for(J+=1;I[J]&&I[J]<=M;)J++;V=J,J-=1,L.b=J,r.close(L.idxF,(function(e){})),L.idxF=r.openSync(_+J+".hoc","r+"),$=L.vId=L.vId1=M-I[J]+1,A=L.s=J+3,q=m($,L,A),L.f=l(q,J),L.idFr=r.readFileSync(B+L.f+".txt")}else $=L.vId=M-I[J]+1;N(_,B,L,C),L[0]&&x(M,L,C.rUpd,U,w,j,k,O,D,s)}if(0!=(z=Object.keys(C.rUpd).length)&&(b(B,L,C.rUpd),C.len_rUpd+=z),r.close(L.idxF,(function(e){})),F[2]==L.f&&L.difOffs){let e=p[2],t=1;for(;t<=L.difOffs[1];)e[t]+=L.difOffs[0],t+=1;let n=p[1];n[3]=n[3]+L.difOffs[0],r.writeFileSync(h+"/i/ref.txt",p[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-a+" ms",count:C.len_rUpd}};change=function(e,t,n,f,o,d){let s=Date.now();var{error:c,pathTb:a,offsNum:v,vlsp:h,vl:y,ifl:I,id_:t,lastId:F}=D(i,e,t,n,f);if(c)return{error:c};var{error:c,setV:g}=u(a,o,d);if(c)return c;let S=[],x=[];for(let e in g)S=[...S,...g[e][2]],x.push(...g[e][0],255,...g[e][1],255);let w=p(250,x.length);var O=[...p(250,2+w.length+x.length+S.length),255,...w,255,...x,...S],j=O.length,k={rUpd:{},len_rUpd:0};let T=y.length;for(var C=2;C<T&&!(t<y[C]);C++);let _=t-y[C-=1]+1;var B={b:C,s:C+3,vl:y,vId:_,vId1:_,vId0:_,r:1};let $=a+"/i/i",A=a+"/d/b";B.idxF=r.openSync($+B.b+".hoc","r+");let V,J=m(_,B,B.s);if(B.f=l(J,C),B.idFr=r.readFileSync(A+B.f+".txt"),v)if(n>0)if(f)for(N($,A,B,k);n&&B.r&&(!B[0]||(U(B,k.rUpd,O,j),--f));)n-=1,t+=1,B.vId+=1,N($,A,B,k);else for(N($,A,B,k);n&&B.r;)B[0]&&U(B,k.rUpd,O,j),n-=1,t+=1,B.vId+=1,N($,A,B,k);else if(f)for(N($,A,B,k);n&&B.r&&(!B[0]||(U(B,k.rUpd,O,j),--f));)n+=1,t-=1,B.vId-=1,N($,A,B,k);else for(N($,A,B,k);n&&B.r;)B[0]&&U(B,k.rUpd,O,j),n+=1,t-=1,B.vId-=1,N($,A,B,k);else if("+"==n)if(f)for(N($,A,B,k);B.r&&(!B[0]||(U(B,k.rUpd,O,j),--f));)t+=1,B.vId+=1,N($,A,B,k);else for(N($,A,B,k);B.r;)B[0]&&U(B,k.rUpd,O,j),t+=1,B.vId+=1,N($,A,B,k);else if(f)for(N($,A,B,k);B.r&&(!B[0]||(U(B,k.rUpd,O,j),--f));)t-=1,B.vId-=1,N($,A,B,k);else for(N($,A,B,k);B.r;)B[0]&&U(B,k.rUpd,O,j),t-=1,B.vId-=1,N($,A,B,k);if(0!=(V=Object.keys(k.rUpd).length)&&(b(A,B,k.rUpd),k.len_rUpd+=V),r.close(B.idxF,(function(e){})),I[2]==B.f&&B.difOffs){let e=h[2],t=1;for(;t<=B.difOffs[1];)e[t]+=B.difOffs[0],t+=1;let n=h[1];n[3]=n[3]+B.difOffs[0],r.writeFileSync(a+"/i/ref.txt",h[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-s+" ms",count:k.len_rUpd}};changeIn=function(e,t,n,f,o){let d=Date.now();var{error:s,pathTb:c,vlsp:a,vl:v,ifl:h}=T(i,e,t,n);if(s)return{error:s};var{error:s,setV:y}=u(c,f,o);if(s)return s;let I=[],F=[];for(let e in y)I=[...I,...y[e][2]],F.push(...y[e][0],255,...y[e][1],255);let g=p(250,F.length);var S=[...p(250,2+g.length+F.length+I.length),255,...g,255,...F,...I],x=S.length,w={rUpd:{},len_rUpd:0};let O=c+"/i/i",j=c+"/d/b";var k,D=3,C=1,_=0,B={vl:v,r:1};let $,A;if(B.idxF=r.openSync(O+1+".hoc","r+"),n)for(var V of t){if(v[C]&&v[C]<=V){for(_+=1;v[_]&&v[_]<=V;)_++;C=_,_-=1,B.b=_,r.close(B.idxF,(function(e){})),B.idxF=r.openSync(O+_+".hoc","r+"),k=B.vId=B.vId1=V-v[_]+1,D=B.s=_+3,$=m(k,B,D),B.f=l($,_),B.idFr=r.readFileSync(j+B.f+".txt")}else k=B.vId=V-v[_]+1;if(N(O,j,B,w),B[0]&&U(B,w.rUpd,S,x),0==--n)break}else for(var V of t){if(v[C]&&v[C]<=V){for(_+=1;v[_]&&v[_]<=V;)_++;C=_,_-=1,B.b=_,r.close(B.idxF,(function(e){})),B.idxF=r.openSync(O+_+".hoc","r+"),k=B.vId=B.vId1=V-v[_]+1,D=B.s=_+3,$=m(k,B,D),B.f=l($,_),B.idFr=r.readFileSync(j+B.f+".txt")}else k=B.vId=V-v[_]+1;N(O,j,B,w),B[0]&&U(B,w.rUpd,S,x)}if(0!=(A=Object.keys(w.rUpd).length)&&(b(j,B,w.rUpd),w.len_rUpd+=A),r.close(B.idxF,(function(e){})),h[2]==B.f&&B.difOffs){let e=a[2],t=1;for(;t<=B.difOffs[1];)e[t]+=B.difOffs[0],t+=1;let n=a[1];n[3]=n[3]+B.difOffs[0],r.writeFileSync(c+"/i/ref.txt",a[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-d+" ms",count:w.len_rUpd}};changeIf=function(e,t,n,f,d,s="*",a=y){let u=Date.now();var{error:h,pathTb:p,offsNum:I,vlsp:F,vl:g,ifl:S,id_:t,lastId:x}=D(i,e,t,n,f);if(h)return{error:h};let U=r.readFileSync(p+"/i/refCol.txt","utf8"),O=JSON.parse(o(U,",",1)[1]);var{error:h,colN:j,colval:k,cn:T}=v(O,d);if(h)return{error:h};var{error:h,colCN:C,colCV:_}=c(O,s,"colCN","colCV");if(h)return{error:h};let B=Object.keys(j).length+Object.keys(C).length;var $={rUpd:{},len_rUpd:0};let A=g.length;for(var V=2;V<A&&!(t<g[V]);V++);let J=t-g[V-=1]+1;var L={b:V,s:V+3,vl:g,vId:J,vId1:J,vId0:J,r:1};let q=p+"/i/i",z=p+"/d/b";L.idxF=r.openSync(q+L.b+".hoc","r+");let M,H=m(J,L,L.s);if(L.f=l(H,V),L.idFr=r.readFileSync(z+L.f+".txt"),I)if(n>0)if(f)for(N(q,z,L,$);n&&L.r&&(!L[0]||(w(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)n-=1,t+=1,L.vId+=1,N(q,z,L,$);else for(N(q,z,L,$);n&&L.r;)L[0]&&w(t,L,$.rUpd,j,k,C,_,T,B,a),n-=1,t+=1,L.vId+=1,N(q,z,L,$);else if(f)for(N(q,z,L,$);n&&L.r&&(!L[0]||(w(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)n+=1,t-=1,L.vId-=1,N(q,z,L,$);else for(N(q,z,L,$);n&&L.r;)L[0]&&w(t,L,$.rUpd,j,k,C,_,T,B,a),n+=1,t-=1,L.vId-=1,N(q,z,L,$);else if("+"==n)if(f)for(N(q,z,L,$);L.r&&(!L[0]||(w(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)t+=1,L.vId+=1,N(q,z,L,$);else for(N(q,z,L,$);L.r;)L[0]&&w(t,L,$.rUpd,j,k,C,_,T,B,a),t+=1,L.vId+=1,N(q,z,L,$);else if(f)for(N(q,z,L,$);L.r&&(!L[0]||(w(t,L,$.rUpd,j,k,C,_,T,B,a),--f));)t-=1,L.vId-=1,N(q,z,L,$);else for(N(q,z,L,$);L.r;)L[0]&&w(t,L,$.rUpd,j,k,C,_,T,B,a),t-=1,L.vId-=1,N(q,z,L,$);if(0!=(M=Object.keys($.rUpd).length)&&(b(z,L,$.rUpd),$.len_rUpd+=M),r.close(L.idxF,(function(e){})),S[2]==L.f&&L.difOffs){let e=F[2],t=1;for(;t<=L.difOffs[1];)e[t]+=L.difOffs[0],t+=1;let n=F[1];n[3]=n[3]+L.difOffs[0],r.writeFileSync(p+"/i/ref.txt",F[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-u+" ms",count:$.len_rUpd}};changeInIf=function(e,t,n,f,d="*",s=y){let a=Date.now();var{error:u,pathTb:h,vlsp:p,vl:I,ifl:F}=T(i,e,t,n);if(u)return{error:u};let g=r.readFileSync(h+"/i/refCol.txt","utf8"),S=JSON.parse(o(g,",",1)[1]);var{error:u,colN:x,colval:U,cn:O}=v(S,f);if(u)return{error:u};var{error:u,colCN:j,colCV:k}=c(S,d,"colCN","colCV");if(u)return{error:u};let D=Object.keys(x).length+Object.keys(j).length;var C={rUpd:{},len_rUpd:0};let _=h+"/i/i",B=h+"/d/b";var $,A=3,V=1,J=0,L={vl:I,r:1};let q,z;if(L.idxF=r.openSync(_+1+".hoc","r+"),n)for(var M of t){if(I[V]&&I[V]<=M){for(J+=1;I[J]&&I[J]<=M;)J++;V=J,J-=1,L.b=J,r.close(L.idxF,(function(e){})),L.idxF=r.openSync(_+J+".hoc","r+"),$=L.vId=L.vId1=M-I[J]+1,A=L.s=J+3,q=m($,L,A),L.f=l(q,J),L.idFr=r.readFileSync(B+L.f+".txt")}else $=L.vId=M-I[J]+1;if(N(_,B,L,C),L[0]&&w(M,L,C.rUpd,x,U,j,k,O,D,s),0==--n)break}else for(var M of t){if(I[V]&&I[V]<=M){for(J+=1;I[J]&&I[J]<=M;)J++;V=J,J-=1,L.b=J,r.close(L.idxF,(function(e){})),L.idxF=r.openSync(_+J+".hoc","r+"),$=L.vId=L.vId1=M-I[J]+1,A=L.s=J+3,q=m($,L,A),L.f=l(q,J),L.idFr=r.readFileSync(B+L.f+".txt")}else $=L.vId=M-I[J]+1;N(_,B,L,C),L[0]&&w(M,L,C.rUpd,x,U,j,k,O,D,s)}if(0!=(z=Object.keys(C.rUpd).length)&&(b(B,L,C.rUpd),C.len_rUpd+=z),r.close(L.idxF,(function(e){})),F[2]==L.f&&L.difOffs){let e=p[2],t=1;for(;t<=L.difOffs[1];)e[t]+=L.difOffs[0],t+=1;let n=p[1];n[3]=n[3]+L.difOffs[0],r.writeFileSync(h+"/i/ref.txt",p[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-a+" ms",count:C.len_rUpd}};delete=function(e,t,n,f){let o=Date.now();var{error:d,pathTb:s,offsNum:c,vlsp:a,vl:u,ifl:v,id_:t,lastId:h}=D(i,e,t,n,f);if(d)return{error:d};var p={del:!0,rUpd:{},len_rUpd:0};let y=u.length;for(var b=2;b<y&&!(t<u[b]);b++);let F=t-u[b-=1]+1;var g={b:b,s:b+3,vl:u,vId:F,vId1:F,vId0:F,r:1};let S=s+"/i/i",x=s+"/d/b";g.idxF=r.openSync(S+g.b+".hoc","r+");let U,w=m(F,g,g.s);if(g.xf=w.slice(0,b),g.f=l(w,b),g.idFr=r.readFileSync(x+g.f+".txt"),c)if(n>0)if(f)for(N(S,x,g,p);n&&g.r&&(!g[0]||(O(g,p.rUpd),--f));)n-=1,t+=1,g.vId+=1,N(S,x,g,p);else for(N(S,x,g,p);n&&g.r;)g[0]&&O(g,p.rUpd),n-=1,t+=1,g.vId+=1,N(S,x,g,p);else if(f)for(N(S,x,g,p);n&&g.r&&(!g[0]||(O(g,p.rUpd),--f));)n+=1,t-=1,g.vId-=1,N(S,x,g,p);else for(N(S,x,g,p);n&&g.r;)g[0]&&O(g,p.rUpd),n+=1,t-=1,g.vId-=1,N(S,x,g,p);else if("+"==n)if(f)for(N(S,x,g,p);g.r&&(!g[0]||(O(g,p.rUpd),--f));)t+=1,g.vId+=1,N(S,x,g,p);else for(N(S,x,g,p);g.r;)g[0]&&O(g,p.rUpd),t+=1,g.vId+=1,N(S,x,g,p);else if(f)for(N(S,x,g,p);g.r&&(!g[0]||(O(g,p.rUpd),--f));)t-=1,g.vId-=1,N(S,x,g,p);else for(N(S,x,g,p);g.r;)g[0]&&O(g,p.rUpd),t-=1,g.vId-=1,N(S,x,g,p);if(0!=(U=Object.keys(p.rUpd).length)&&(I(x,g,p.rUpd),p.len_rUpd+=U),r.close(g.idxF,(function(e){})),v[2]==g.f&&g.difOffs){let e=a[2],t=1;for(;t<=g.difOffs[1];)e[t]+=g.difOffs[0],t+=1;let n=a[1];n[3]=n[3]+g.difOffs[0],r.writeFileSync(s+"/i/ref.txt",a[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-o+" ms",count:p.len_rUpd}};deleteIn=function(e,t){let n=Date.now();var{error:f,pathTb:o,vlsp:d,vl:s,ifl:c}=T(i,e,t,lim);if(f)return{error:f};var a={rUpd:{},len_rUpd:0,del:!0};let u=o+"/i/i",v=o+"/d/b";var h,p=3,y=1,b=0,F={vl:s,r:1};let g,S;if(F.idxF=r.openSync(u+1+".hoc","r+"),lim)for(var x of t){if(s[y]&&s[y]<=x){for(b+=1;s[b]&&s[b]<=x;)b++;y=b,b-=1,F.b=b,r.close(F.idxF,(function(e){})),F.idxF=r.openSync(u+b+".hoc","r+"),h=F.vId=F.vId1=x-s[b]+1,p=F.s=b+3,g=m(h,F,p),F.xf=g.slice(0,b),F.f=l(g,b),F.idFr=r.readFileSync(v+F.f+".txt")}else h=F.vId=x-s[b]+1;if(N(u,v,F,a),F[0]&&O(F,a.rUpd),lim--,0==lim)break}else for(var x of t){if(s[y]&&s[y]<=x){for(b+=1;s[b]&&s[b]<=x;)b++;y=b,b-=1,F.b=b,r.close(F.idxF,(function(e){})),F.idxF=r.openSync(u+b+".hoc","r+"),h=F.vId=F.vId1=x-s[b]+1,p=F.s=b+3,g=m(h,F,p),F.xf=g.slice(0,b),F.f=l(g,b),F.idFr=r.readFileSync(v+F.f+".txt")}else h=F.vId=x-s[b]+1;N(u,v,F,a),F[0]&&O(F,a.rUpd)}if(0!=(S=Object.keys(a.rUpd).length)&&(I(v,F,a.rUpd),a.len_rUpd+=S),r.close(F.idxF,(function(e){})),c[2]==F.f&&F.difOffs){let e=d[2],t=1;for(;t<=F.difOffs[1];)e[t]+=F.difOffs[0],t+=1;let n=d[1];n[3]=n[3]+F.difOffs[0],r.writeFileSync(o+"/i/ref.txt",d[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-n+" ms",count:a.len_rUpd}};deleteIf=function(e,t,n,f,d,s=y){let c=Date.now();var{error:a,pathTb:u,offsNum:h,vlsp:p,vl:b,ifl:F,id_:t,lastId:g}=D(i,e,t,n,f);if(a)return{error:a};let S=r.readFileSync(u+"/i/refCol.txt","utf8"),x=JSON.parse(o(S,",",1)[1]);var{error:a,colN:U,colval:w,cn:O}=v(x,d);if(a)return{error:a};let k=Object.keys(U).length;var T={del:!0,rUpd:{},len_rUpd:0};let C=b.length;for(var _=2;_<C&&!(t<b[_]);_++);let B=t-b[_-=1]+1;var $={b:_,s:_+3,vl:b,vId:B,vId1:B,vId0:B,r:1};let A=u+"/i/i",V=u+"/d/b";$.idxF=r.openSync(A+$.b+".hoc","r+");let J,L=m(B,$,$.s);if($.xf=L.slice(0,_),$.f=l(L,_),$.idFr=r.readFileSync(V+$.f+".txt"),h)if(n>0)if(f)for(N(A,V,$,T);n&&$.r&&(!$[0]||(j(t,$,T.rUpd,U,w,0,k,s),--f));)n-=1,t+=1,$.vId+=1,N(A,V,$,T);else for(N(A,V,$,T);n&&$.r;)$[0]&&j(t,$,T.rUpd,U,w,0,k,s),n-=1,t+=1,$.vId+=1,N(A,V,$,T);else if(f)for(N(A,V,$,T);n&&$.r&&(!$[0]||(j(t,$,T.rUpd,U,w,0,k,s),--f));)n+=1,t-=1,$.vId-=1,N(A,V,$,T);else for(N(A,V,$,T);n&&$.r;)$[0]&&j(t,$,T.rUpd,U,w,0,k,s),n+=1,t-=1,$.vId-=1,N(A,V,$,T);else if("+"==n)if(f)for(N(A,V,$,T);$.r&&(!$[0]||(j(t,$,T.rUpd,U,w,0,k,s),--f));)t+=1,$.vId+=1,N(A,V,$,T);else for(N(A,V,$,T);$.r;)$[0]&&j(t,$,T.rUpd,U,w,0,k,s),t+=1,$.vId+=1,N(A,V,$,T);else if(f)for(N(A,V,$,T);$.r&&(!$[0]||(j(t,$,T.rUpd,U,w,0,k,s),--f));)t-=1,$.vId-=1,N(A,V,$,T);else for(N(A,V,$,T);$.r;)$[0]&&j(t,$,T.rUpd,U,w,0,k,s),t-=1,$.vId-=1,N(A,V,$,T);if(0!=(J=Object.keys(T.rUpd).length)&&(I(V,$,T.rUpd),T.len_rUpd+=J),r.close($.idxF,(function(e){})),F[2]==$.f&&$.difOffs){let e=p[2],t=1;for(;t<=$.difOffs[1];)e[t]+=$.difOffs[0],t+=1;let n=p[1];n[3]=n[3]+$.difOffs[0],r.writeFileSync(u+"/i/ref.txt",p[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-c+" ms",count:T.len_rUpd}};deleteInIf=function(e,t,n,f,d=y){let s=Date.now();var{error:c,pathTb:a,vlsp:u,vl:h,ifl:p}=T(i,e,t,n);if(c)return{error:c};let b=r.readFileSync(a+"/i/refCol.txt","utf8"),F=JSON.parse(o(b,",",1)[1]);var{error:c,colN:g,colval:S,cn:x}=v(F,f);if(c)return{error:c};let U=Object.keys(g).length;var w={rUpd:{},len_rUpd:0,del:!0};let O=a+"/i/i",k=a+"/d/b";var D,C=3,_=1,B=0,$={vl:h,r:1};let A,V;if($.idxF=r.openSync(O+1+".hoc","r+"),n)for(var J of t){if(h[_]&&h[_]<=J){for(B+=1;h[B]&&h[B]<=J;)B++;_=B,B-=1,$.b=B,r.close($.idxF,(function(e){})),$.idxF=r.openSync(O+B+".hoc","r+"),D=$.vId=$.vId1=J-h[B]+1,C=$.s=B+3,A=m(D,$,C),$.xf=A.slice(0,B),$.f=l(A,B),$.idFr=r.readFileSync(k+$.f+".txt")}else D=$.vId=J-h[B]+1;if(N(O,k,$,w),$[0]&&j(J,$,w.rUpd,g,S,0,U,d),0==--n)break}else for(var J of t){if(h[_]&&h[_]<=J){for(B+=1;h[B]&&h[B]<=J;)B++;_=B,B-=1,$.b=B,r.close($.idxF,(function(e){})),$.idxF=r.openSync(O+B+".hoc","r+"),D=$.vId=$.vId1=J-h[B]+1,C=$.s=B+3,A=m(D,$,C),$.xf=A.slice(0,B),$.f=l(A,B),$.idFr=r.readFileSync(k+$.f+".txt")}else D=$.vId=J-h[B]+1;N(O,k,$,w),$[0]&&j(J,$,w.rUpd,g,S,0,U,d)}if(0!=(V=Object.keys(w.rUpd).length)&&(I(k,$,w.rUpd),w.len_rUpd+=V),r.close($.idxF,(function(e){})),p[2]==$.f&&$.difOffs){let e=u[2],t=1;for(;t<=$.difOffs[1];)e[t]+=$.difOffs[0],t+=1;let n=u[1];n[3]=n[3]+$.difOffs[0],r.writeFileSync(a+"/i/ref.txt",u[0].join("|")+"\n"+n.join("|")+"\n"+e.join("|"))}return{time:Date.now()-s+" ms",count:w.len_rUpd}}}:{error:"This table not found.."}}};
+module.exports = function () {
+  let path_mod = require("path");
+  const fs = require("fs");
+  const {
+    parseCsv
+  } = require("select-csv");
+  let DB_dir_path = path_mod.resolve(process.cwd());
+  let chnk = 2000;
+  let fsz = 1000000;
+
+  function split(str, p, n) {
+    let arr = [],
+      i = 0,
+      l = p.length;
+    i = str.indexOf(p);
+    if (n) {
+      let s = 0;
+      while (i != -1 && s < n) {
+        arr.push(str.slice(0, i));
+        str = str.slice(i + l);
+        i = str.indexOf(p);
+        s++
+      }
+    } else
+      while (i != -1) {
+        arr.push(str.slice(0, i));
+        str = str.slice(i + l);
+        i = str.indexOf(p)
+      }
+    arr.push(str);
+    return arr
+  }
+
+  function B(a, b) {
+    let i = 1,
+      f = a[0] & 0b01111111;
+    while (i < b) {
+      f += a[i] * 128 * 256 ** (i - 1);
+      i++
+    }
+    return f
+  }
+
+  function to_3_Bytes(num) {
+    return [(num & 0xff0000) >> 16, (num & 0xff00) >> 8, num & 0xff]
+  }
+
+  function isDir(path) {
+    try {
+      var stat = fs.lstatSync(path);
+      return stat.isDirectory()
+    } catch (e) {
+      return !1
+    }
+  };
+
+  function getCol(colName, clmn, a, b) {
+    if (clmn !== "*" && !Array.isArray(clmn)) {
+      return {
+        error: " Columns must a array .. "
+      }
+    }
+    let colN = {},
+      colval = {};
+    if (clmn === "*") {
+      for (let c in colName) {
+        colN[colName[c][0]] = c;
+        colval[c] = colName[c][1]
+      }
+    } else {
+      for (let c of clmn) {
+        if (c in colName) {
+          colN[colName[c][0]] = c;
+          colval[c] = colName[c][1]
+        } else {
+          return {
+            error: ' No column with this name "' + c + '" in the table .. '
+          }
+        }
+      }
+    }
+    return {
+      [a]: colN,
+      [b]: colval
+    }
+  }
+
+  function colForInsert(pathDB, table, clmn) {
+    var {
+      error,
+      pathTb,
+      clmn,
+      clmnL
+    } = check_insert_params(pathDB, table, clmn);
+    if (error) return {
+      error: error
+    };
+    
+    var refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+      sp = split(refCol, ",", 1);
+    var colName = JSON.parse(sp[1]),
+      ca = [];
+    if (clmn === "*") {
+      clmnL = Object.keys(colName).length
+      for (let c in colName) {
+        ca.push([colName[c][0], base(250, colName[c][0])])
+      }
+    } else {
+      for (let c of clmn) {
+        if (c in colName) {
+          ca.push([colName[c][0], base(250, colName[c][0])])
+        } else {
+          return {
+            error: ' No column with this name "' + c + '" in the table .. '
+          }
+        }
+      }
+    }
+    return {
+      pathTb: pathTb,
+      ca: ca,
+      clmnL: clmnL
+    }
+  }
+
+  function colForUpd(pathTb, clmn, vals) {
+    if (clmn !== "*" && !Array.isArray(clmn)) {
+      return {
+        error: " Columns must a array .. "
+      }
+    }
+    if (!Array.isArray(vals)) {
+      return {
+        error: " Values must a array .. "
+      }
+    }
+    var refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+      sp = split(refCol, ",", 1);
+    var colName = JSON.parse(sp[1]),
+      setV = {},
+      newC;
+    let j = 0
+    if (clmn === "*") {
+      if (clmn.length != Object.keys(vals).length) {
+        return {
+          error: " The length of the values in the array is not equal to the length of the columns in the table .. ",
+        }
+      }
+      for (let c in colName) {
+        newC = Buffer.from(vals[j].toString());
+        setV[colName[c][0]] = [base(250, colName[c][0]), base(250, newC.length), newC]
+        j++
+      }
+    } else {
+      if (clmn.length != vals.length) {
+        return {
+          error: " The length of the values in the array is not equal to the length of the columns .. ",
+        }
+      }
+      for (let c of clmn) {
+        if (c in colName) {
+          newC = Buffer.from(vals[j].toString());
+          setV[colName[c][0]] = [base(250, colName[c][0]), base(250, newC.length), newC]
+        } else {
+          return {
+            error: ' No column with this name "' + c + '" in the table .. '
+          }
+        }
+        j++
+      }
+    }
+    return {
+      setV: setV
+    }
+  }
+
+  function getColForUpdIf(colName, clmn) {
+    if (clmn !== "*" && !Array.isArray(clmn)) {
+      return {
+        error: " Columns must a array .. "
+      }
+    }
+    let colN = {},
+      colval = {},
+      cn = {};
+    if (clmn === "*") {
+      for (let c in colName) {
+        colN[colName[c][0]] = c;
+        colval[c] = colName[c][1];
+        cn[c] = [base(250, colName[c][0]), colName[c][0]]
+      }
+    } else {
+      for (let c of clmn) {
+        if (c in colName) {
+          colN[colName[c][0]] = c;
+          colval[c] = colName[c][1];
+          cn[c] = [base(250, colName[c][0]), colName[c][0]]
+        } else {
+          return {
+            error: ' No column with this name "' + c + '" in the table .. '
+          }
+        }
+      }
+    }
+    return {
+      colN: colN,
+      colval: colval,
+      cn: cn
+    }
+  }
+
+  function initialCol(pathTb, col, dflt) {
+    var refCol = fs.openSync(pathTb + "/i/refCol.txt", "w");
+    var colName = {};
+    var ld = dflt.length;
+    let col_L = col.length;
+    let c, i = 0,
+      dflt_;
+    for (; i < col_L; i++) {
+      c = col[i];
+      if (i < ld) {
+        dflt_ = dflt[i].toString()
+      } else {
+        dflt_ = ""
+      }
+      colName[c] = [i, dflt_]
+    }
+    fs.writeSync(refCol, i + "," + JSON.stringify(colName));
+    fs.closeSync(refCol)
+  }
+
+  function refData(pathTb) {
+    let ref = fs.readFileSync(pathTb + "/i/ref.txt", "utf8");
+    let vlsp = split(ref, "\n");
+    return [split(vlsp[0], "|").map(Number), split(vlsp[1], "|").map(Number), split(vlsp[2], "|").map(Number),]
+  }
+
+  function base(kb, l) {
+    var k = kb,
+      arr = [];
+    arr.push(l % k);
+    l -= l % k;
+    while (l >= k) {
+      arr.push((l / k) % kb);
+      k *= kb;
+      l -= l % k
+    }
+    return arr
+  }
+
+  function cond(id, clmn, coClmn, get) {
+    return 1
+  }
+
+  function saveU(_pathD, oi, rUpd) {
+    var oUpd, ii, n, vId_, vId, rUpdVid, l0, s = oi.s,
+      b = oi.b;
+    var di = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let pathD = _pathD + oi.f + ".txt",
+      fDb = fs.openSync(pathD, "w+");
+    for (let g in rUpd) {
+      vId_ = Number(g);
+      rUpdVid = rUpd[vId_];
+      oUpd = rUpdVid.o[1];
+      fs.writeFileSync(fDb, oi.idFr.slice(0, oUpd));
+      fs.writeFileSync(fDb, Buffer.from(rUpdVid.ids));
+      oUpd += rUpdVid.lenId;
+      di[0] += rUpdVid.newLen - rUpdVid.lenId;
+      delete rUpd[vId_];
+      break
+    }
+    for (let g in rUpd) {
+      n = 0
+      vId = Number(g);
+      rUpdVid = rUpd[vId];
+      if (vId_ + 1 < vId) {
+        fs.writeFileSync(fDb, Buffer.from(oi.idFr.slice(oUpd, rUpdVid.o[1])));
+        callB(0)
+      }
+      ii = vId;
+      while (ii % 10 == 0) {
+        n += 1;
+        di[n] += di[n - 1];
+        di[n - 1] = 0;
+        ii = ii / 10
+      }
+      vId_ = vId;
+      oUpd = rUpdVid.o[1] + rUpdVid.lenId;
+      fs.writeFileSync(fDb, Buffer.from(rUpdVid.ids));
+      if (di[n] != 0) {
+        l0 = rUpdVid.o[0] + di[n];
+        fs.writeSync(oi.idxF, Buffer.from(to_3_Bytes(l0)), 0, 3, vId * s + b)
+      }
+      di[0] += rUpdVid.newLen - rUpdVid.lenId
+    }
+    fs.writeFileSync(fDb, oi.idFr.slice(oUpd));
+    fs.close(fDb, function (argument) { });
+    callB(1);
+
+    function callB(bol) {
+      let o, oD;
+      let vI_ = vId_ + 1;
+      if (1) {
+        o = vI_ * s;
+        let chunkX = segment(vI_, oi, s);
+        if (chunkX.length != 0 && B(chunkX, b) == oi.f) {
+          oD = chunkX[b] * 65536 + chunkX[b + 1] * 256 + chunkX[b + 2];
+          let t_DifO = di.reduce((a, b) => a + b, 0);
+          if (t_DifO != 0) {
+            let n = 0,
+              m = 1,
+              k = 10;
+            let difO;
+            while (1) {
+              while (vI_ % k == 0) {
+                n += 1;
+                m = 10 ** n;
+                k *= 10;
+                di[n] += di[n - 1];
+                di[n - 1] = 0
+              }
+              difO = di[n];
+              l0 = chunkX[b] * 65536 + chunkX[b + 1] * 256 + chunkX[b + 2] + difO;
+              fs.writeSync(oi.idxF, Buffer.from(to_3_Bytes(l0)), 0, 3, o + b);
+              vI_ += m;
+              if (bol || vI_ < vId) {
+                o = vI_ * s;
+                chunkX = segment(vI_, oi, s);
+                if (chunkX.length == 0 || B(chunkX, b) != oi.f) {
+                  break
+                }
+              } else break
+            }
+            oi.difOffs = [difO, n]
+          }
+        } else oi.difOffs = [di[0], 0]
+      }
+    }
+  }
+
+  function saveD(_pathD, oi, rUpd) {
+    var oUpd, ii, n, vId_, vId, rUpdVid, l0, s = oi.s,
+      b = oi.b,
+      xf = oi.xf;
+    xf[0] = xf[0] | 0b10000000;
+    var di = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let pathD = _pathD + oi.f + ".txt",
+      fDb = fs.openSync(pathD, "w+");
+    for (let g in rUpd) {
+      vId_ = Number(g);
+      rUpdVid = rUpd[vId_];
+      oUpd = rUpdVid.o[1];
+      fs.writeFileSync(fDb, oi.idFr.slice(0, oUpd));
+      fs.writeSync(oi.idxF, xf, 0, b, vId_ * s);
+      oUpd += rUpdVid.lenId;
+      di[0] -= rUpdVid.lenId;
+      delete rUpd[vId_];
+      break
+    }
+    for (let g in rUpd) {
+      n = 0;
+      vId = Number(g);
+      rUpdVid = rUpd[vId];
+      if (vId_ + 1 < vId) {
+        fs.writeFileSync(fDb, Buffer.from(oi.idFr.slice(oUpd, rUpdVid.o[1])));
+        callB(0)
+      }
+      ii = vId;
+      while (ii % 10 == 0) {
+        n += 1;
+        di[n] += di[n - 1];
+        di[n - 1] = 0;
+        ii = ii / 10
+      }
+      vId_ = vId;
+      oUpd = rUpdVid.o[1] + rUpdVid.lenId;
+      l0 = rUpdVid.o[0] + di[n];
+      di[0] -= rUpdVid.lenId;
+      fs.writeSync(oi.idxF, Buffer.from([...xf, ...to_3_Bytes(l0)]), 0, s, vId * s)
+    }
+    fs.writeFileSync(fDb, oi.idFr.slice(oUpd));
+    fs.close(fDb, function (argument) { });
+    callB(1);
+
+    function callB(bol) {
+      let o, oD;
+      let vI_ = vId_ + 1;
+      if (1) {
+        o = vI_ * s;
+        let chunkX = segment(vI_, oi, s);
+        if (chunkX.length != 0 && B(chunkX, b) == oi.f) {
+          oD = chunkX[b] * 65536 + chunkX[b + 1] * 256 + chunkX[b + 2];
+          let t_DifO = di.reduce((a, b) => a + b, 0);
+          if (t_DifO != 0) {
+            let n = 0,
+              m = 1,
+              k = 10;
+            let difO;
+            while (1) {
+              while (vI_ % k == 0) {
+                n += 1;
+                m = 10 ** n;
+                k *= 10;
+                di[n] += di[n - 1];
+                di[n - 1] = 0
+              }
+              difO = di[n];
+              l0 = chunkX[b] * 65536 + chunkX[b + 1] * 256 + chunkX[b + 2] + difO;
+              fs.writeSync(oi.idxF, Buffer.from(to_3_Bytes(l0)), 0, 3, o + b);
+              vI_ += m;
+              if (bol || vI_ < vId) {
+                o = vI_ * s;
+                chunkX = segment(vI_, oi, s);
+                if (chunkX.length == 0 || B(chunkX, b) != oi.f) {
+                  break
+                }
+              } else break
+            }
+            oi.difOffs = [difO, n]
+          }
+        } else oi.difOffs = [di[0], 0]
+      }
+    }
+  }
+
+  function segment(vId, oi, s) {
+    if (vId >= oi.vId1 || vId < oi.vId0) {
+      if (vId != oi.vId) {
+        if (vId >= oi.vId1) {
+          oi.vId1 = vId + chnk;
+          oi.vId0 = oi.vId - chnk
+        } else {
+          oi.vId0 = vId - chnk;
+          oi.vId1 = oi.vId + chnk
+        }
+      } else {
+        oi.vId1 = vId + chnk;
+        oi.vId0 = vId - chnk
+      }
+      if (oi.vId0 < 0) oi.vId0 = 0;
+      let chunkSz = s * (oi.vId1 - oi.vId0);
+      oi.chunk = Buffer.alloc(chunkSz);
+      let byteChunk1 = fs.readSync(oi.idxF, oi.chunk, 0, chunkSz, oi.vId0 * s);
+      if (byteChunk1 < chunkSz) {
+        oi.chunk = oi.chunk.slice(0, byteChunk1)
+      }
+    }
+    let a = (vId - oi.vId0) * s;
+    return oi.chunk.slice(a, a + s)
+  }
+
+  function slc(colval, colN, c_, offs, lN) {
+    let b = 1000,
+      c = c_.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x;
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            if (x in colN) {
+              colval[colN[x]] = c.toString("utf-8", l, l += m)
+              lN--;
+              if (lN == 0)
+                break
+            } else l += m
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          if (m + i > c.length)
+            c = c_.slice(offs, m + i)
+        }
+        m = 0
+        h++
+      } else m = m * 250 + c[i];
+      i++
+    }
+    return colval
+  }
+
+  function srch(id_, oi, colN, colval_, colCN, colSV_, lNC, chekCond) {
+    let colval = {
+      ...colval_,
+    },
+      colCV = {
+        ...colSV_,
+      };
+    let offs = oi[0][3],
+      b = 1000,
+      c = oi.idFr.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x;
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            if (x in colN) {
+              lNC--;
+              if (x in colCN) {
+                colCV[colCN[x]] = colval[colN[x]] = c.toString("utf-8", l, l += m);
+                lNC--
+              } else colval[colN[x]] = c.toString("utf-8", l, l += m)
+              if (lNC == 0) {
+                break
+              }
+            } else if (x in colCN) {
+              colCV[colCN[x]] = c.toString("utf-8", l, l += m)
+              lNC--;
+              if (lNC == 0) {
+                break
+              }
+            }
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          if (m + i > c.length)
+            c = oi.idFr.slice(offs, m + i)
+        }
+        m = 0
+        h++
+      } else m = m * 250 + c[i];
+      i++
+    }
+    var _get = {};
+    return chekCond(id_, colval, colCV, _get) ? {
+      id: id_,
+      ...colval,
+      get: _get,
+    } : !1
+  }
+
+  function upd(oi, rUpd, setV_, ls) {
+    let l_, r, d = [],
+      setV = {
+        ...setV_
+      };
+    let offs = oi[0][3],
+      b = 1000,
+      c = oi.idFr.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x, a = [
+        [],
+        []
+      ];
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            if (x in setV) {
+              d[x] = setV[x]
+              ls--;
+              l += m
+              if (ls == 0) {
+                r = [c.slice(i + 1, b), c.slice(l, l_)]
+                break
+              }
+            } else d[x] = [a[0], a[1], c.slice(l, l += m)]
+            a = [
+              [],
+              []
+            ]
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          l_ = m + i
+          if (l_ > c.length)
+            c = oi.idFr.slice(offs, l_)
+        }
+        m = 0
+        h++
+      } else {
+        m = m * 250 + c[i];
+        if (h > 1) {
+          a[h % 2].push(c[i])
+        }
+      }
+      i++
+    }
+    let dd = [],
+      ids = []
+    for (c in d) {
+      dd = [...dd, ...d[c][2]];
+      ids.push(...d[c][0], 255, ...d[c][1], 255)
+    }
+    if (r) {
+      dd = [...dd, ...r[1]];
+      ids.push(...r[0])
+    }
+    let c_s = base(250, ids.length)
+    l = 2 + c_s.length + ids.length + dd.length;
+    ids = [...base(250, l), 255, ...c_s, 255, ...ids, ...dd];
+    rUpd[oi.vId] = {
+      o: [oi[0][2], oi[0][3]],
+      ids: ids,
+      newLen: ids.length,
+      lenId: l_,
+    }
+  }
+
+  function updIf(id_, oi, rUpd, colN, colval_, colCN, colSV_, cn, lNC, chekCond) {
+    let c2, l_, r, d = [],
+      offs = oi[0][3],
+      colval = {
+        ...colval_,
+      },
+      colCV = {
+        ...colSV_,
+      };
+    let b = 1000,
+      c = oi.idFr.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x, a = [
+        [],
+        []
+      ];
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            c2 = c.slice(l, l += m);
+            d[x] = [a[0], a[1], c2]
+            if (x in colN) {
+              lNC--;
+              if (x in colCN) {
+                colCV[colCN[x]] = colval[colN[x]] = c2.toString("utf-8");
+                lNC--
+              } else colval[colN[x]] = c2.toString("utf-8")
+              if (lNC == 0) {
+                r = [c.slice(i + 1, b), c.slice(l, l_)]
+                break
+              }
+            } else if (x in colCN) {
+              colCV[colCN[x]] = c2.toString("utf-8")
+              lNC--;
+              if (lNC == 0) {
+                r = [c.slice(i + 1, b), c.slice(l, l_)]
+                break
+              }
+            }
+            a = [
+              [],
+              []
+            ]
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          l_ = m + i
+          if (l_ > c.length)
+            c = oi.idFr.slice(offs, l_)
+        }
+        m = 0
+        h++
+      } else {
+        m = m * 250 + c[i];
+        if (h > 1) {
+          a[h % 2].push(c[i])
+        }
+      }
+      i++
+    }
+    if (chekCond(id_, colval, colCV)) {
+      let dd = [],
+        ids = [],
+        newC;
+      for (c in colval) {
+        if (c in cn) {
+          newC = Buffer.from(colval[c].toString());
+          d[cn[c][1]] = [cn[c][0], base(250, newC.length), newC]
+        }
+      }
+      for (c in d) {
+        dd = [...dd, ...d[c][2]];
+        ids.push(...d[c][0], 255, ...d[c][1], 255)
+      }
+      if (r) {
+        dd = [...dd, ...r[1]];
+        ids.push(...r[0])
+      }
+      let c_s = base(250, ids.length)
+      l = 2 + c_s.length + ids.length + dd.length;
+      ids = [...base(250, l), 255, ...c_s, 255, ...ids, ...dd];
+      rUpd[oi.vId] = {
+        o: [oi[0][2], oi[0][3]],
+        ids: ids,
+        newLen: ids.length,
+        lenId: l_,
+      }
+    }
+  }
+
+  function chng(oi, rUpd, stb, newLen) {
+    let offs = oi[0][3],
+      c = oi.idFr.slice(offs, offs + 20),
+      i = 0,
+      k = 0;
+    while (c[i] != 0xff) {
+      k = k * 250 + c[i];
+      i++
+    }
+    rUpd[oi.vId] = {
+      o: [oi[0][2], oi[0][3]],
+      ids: stb,
+      newLen: newLen,
+      lenId: k + i,
+    }
+  }
+
+  function chngIf(id_, oi, rUpd, colN, colval_, colCN, colSV_, cn, lNC, chekCond) {
+    let c2, l_, d = [],
+      offs = oi[0][3],
+      colval = {
+        ...colval_,
+      },
+      colCV = {
+        ...colSV_,
+      };
+    let b = 1000,
+      c = oi.idFr.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x, a = [
+        [],
+        []
+      ];
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            c2 = c.slice(l, l += m);
+            if (x in colN) {
+              d[x] = [a[0], a[1], c2]
+              lNC--;
+              if (x in colCN) {
+                colCV[colCN[x]] = colval[colN[x]] = c2.toString("utf-8");
+                lNC--
+              } else colval[colN[x]] = c2.toString("utf-8")
+              if (lNC == 0) {
+                break
+              }
+            } else if (x in colCN) {
+              colCV[colCN[x]] = c2.toString("utf-8")
+              lNC--;
+              if (lNC == 0) {
+                break
+              }
+            }
+            a = [
+              [],
+              []
+            ]
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          l_ = m + i
+          if (l_ > c.length)
+            c = oi.idFr.slice(offs, l_)
+        }
+        m = 0
+        h++
+      } else {
+        m = m * 250 + c[i];
+        if (h > 1) {
+          a[h % 2].push(c[i])
+        }
+      }
+      i++
+    }
+    if (chekCond(id_, colval, colCV)) {
+      let dd = [],
+        ids = [],
+        newC;
+      for (c in colval) {
+        if (c in cn) {
+          newC = Buffer.from(colval[c].toString());
+          d[cn[c][1]] = [cn[c][0], base(250, newC.length), newC]
+        }
+      }
+      for (c in d) {
+        dd = [...dd, ...d[c][2]];
+        ids.push(...d[c][0], 255, ...d[c][1], 255)
+      }
+      let c_s = base(250, ids.length)
+      l = 2 + c_s.length + ids.length + dd.length;
+      ids = [...base(250, l), 255, ...c_s, 255, ...ids, ...dd];
+      rUpd[oi.vId] = {
+        o: [oi[0][2], oi[0][3]],
+        ids: ids,
+        newLen: ids.length,
+        lenId: l_,
+      }
+    }
+  }
+
+  function iDel(oi, rUpd) {
+    let offs = oi[0][3],
+      c = oi.idFr.slice(offs, offs + 20),
+      i = 0,
+      k = 0;
+    while (c[i] != 0xff) {
+      k = k * 250 + c[i];
+      i++
+    }
+    rUpd[oi.vId] = {
+      o: [oi[0][2], oi[0][3]],
+      lenId: k + i,
+    }
+  }
+
+  function iDelIf(id_, oi, rUpd, colN, colval_, cn, lN, chekCond) {
+    let l_, offs = oi[0][3],
+      colval = {
+        ...colval_,
+      };
+    let b = 1000,
+      c = oi.idFr.slice(offs, offs + b),
+      h = 0,
+      m = 0,
+      i = 0,
+      l, x;
+    while (i < b) {
+      if (c[i] == 255) {
+        if (h > 1) {
+          if (h % 2) {
+            if (x in colN) {
+              colval[colN[x]] = c.toString("utf-8", l, l += m)
+              lN--;
+              if (lN == 0)
+                break
+            } else l += m
+          } else x = m
+        } else if (h) {
+          l = b = m + i + 1
+        } else {
+          l_ = m + i
+          if (l_ > c.length)
+            c = oi.idFr.slice(offs, l_)
+        }
+        m = 0
+        h++
+      } else m = m * 250 + c[i];
+      i++
+    }
+    if (chekCond(id_, colval)) {
+      rUpd[oi.vId] = {
+        o: [oi[0][2], oi[0][3]],
+        lenId: l_,
+      }
+    }
+  }
+
+  function getOffs(_pathX, _pathD, oi) {
+    let vId = oi.vId,
+      b = oi.b,
+      s = oi.s,
+      chunk;
+    if (vId > 0) chunk = segment(vId, oi, s);
+    else {
+      if (b != 1) {
+        oi.b -= 1;
+        b = oi.b
+        s = oi.s = b + 3
+        fs.close(oi.idxF, function (argument) { })
+        oi.idxF = fs.openSync(_pathX + b + ".hoc", 'r');
+        vId = oi.vId = oi.vId1 = oi.vl[b + 1] - oi.vl[b]
+        chunk = segment(vId, oi, s)
+      } else {
+        oi.r = 0
+        return
+      }
+    }
+    if (chunk.length == 0) {
+      if (oi.vl.length - 1 != b) {
+        oi.b += 1;
+        b = oi.b;
+        s = oi.s = b + 3;
+        fs.close(oi.idxF, function (argument) { });
+        oi.idxF = fs.openSync(_pathX + b + ".hoc", "r");
+        vId = oi.vId = oi.vId1 = 1;
+        chunk = segment(vId, oi, s)
+      } else {
+        oi.r = 0;
+        return
+      }
+    }
+    let f = B(chunk, b);
+    if ((chunk[0] | 0x7f) == 255) {
+      oi[0] = 0;
+      return
+    }
+    let n, oD = chunk[b] * 65536 + chunk[b + 1] * 256 + chunk[b + 2];
+    if (f != oi.f) {
+      oi.f = f;
+      oi.idFr = fs.readFileSync(_pathD + f + ".txt");
+      n = 1
+      while (oi[n]) {
+        oi[n] = null
+        n++
+      }
+    }
+    if (1) {
+      let x, r = vId % 10;
+      if (r == 0) {
+        oi[0] = [vId, f, oD, 0]
+      } else {
+        oi[0] = [vId, f, oD, oD]
+      }
+      vId = (vId - r) / 10;
+      n = 0
+      while (vId) {
+        n++
+        x = vId * 10 ** n
+        r = vId % 10;
+        if (oi[n] && oi[n][0] == x) {
+          if (oi[n][1] != oi.f)
+            n--
+          break
+        } else {
+          chunk = segment(x, oi, s);
+          f = B(chunk, b);
+          oD = chunk[b] * 65536 + chunk[b + 1] * 256 + chunk[b + 2];
+          if (f == oi.f) {
+            if (r == 0) {
+              oi[n] = [x, f, oD, 0]
+            } else {
+              oi[n] = [x, f, oD, oD]
+            }
+          } else {
+            n--
+            break
+          }
+        }
+        vId = (vId - r) / 10
+      }
+      while (n) {
+        oi[n - 1][3] += oi[n][3];
+        n -= 1
+      }
+    }
+  }
+
+  function upd_offs(_pathX, _pathD, oi, updInfo) {
+    let vId = oi.vId,
+      b = oi.b,
+      s = oi.s,
+      chunk;
+    if (vId > 0) chunk = segment(vId, oi, s);
+    else {
+      let l_rUpd;
+      if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+        if (updInfo.del)
+          saveD(_pathD, oi, updInfo.rUpd);
+        else saveU(_pathD, oi, updInfo.rUpd);
+        updInfo.len_rUpd += l_rUpd;
+        updInfo.rUpd = {}
+      }
+      if (b != 1) {
+        oi.b -= 1;
+        b = oi.b;
+        s = oi.s = b + 3;
+        fs.close(oi.idxF, function (argument) { });
+        oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+        vId = oi.vId = oi.vId1 = oi.vl[b + 1] - oi.vl[b];
+        chunk = segment(vId, oi, s)
+      } else {
+        oi.r = 0;
+        return
+      }
+    }
+    if (chunk.length == 0) {
+      let l_rUpd;
+      if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+        if (updInfo.del)
+          saveD(_pathD, oi, updInfo.rUpd);
+        else saveU(_pathD, oi, updInfo.rUpd);
+        updInfo.len_rUpd += l_rUpd;
+        updInfo.rUpd = {}
+      }
+      if (oi.vl.length - 1 != b) {
+        oi.b += 1;
+        b = oi.b;
+        s = oi.s = b + 3;
+        fs.close(oi.idxF, function (argument) { });
+        oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+        vId = oi.vId = oi.vId1 = 1;
+        chunk = segment(vId, oi, s)
+      } else {
+        oi.r = 0;
+        return
+      }
+    }
+    let f = B(chunk, b);
+    if ((chunk[0] | 0x7f) == 255) {
+      oi[0] = 0;
+      return
+    }
+    let n, oD = chunk[b] * 65536 + chunk[b + 1] * 256 + chunk[b + 2];
+    if (f != oi.f) {
+      let l_rUpd;
+      if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+        if (updInfo.del)
+          saveD(_pathD, oi, updInfo.rUpd);
+        else saveU(_pathD, oi, updInfo.rUpd);
+        updInfo.len_rUpd += l_rUpd;
+        updInfo.rUpd = {}
+      }
+      oi.xf = chunk.slice(0, b);
+      oi.f = f;
+      oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+      n = 1
+      while (oi[n]) {
+        oi[n] = null
+        n++
+      }
+    }
+    if (1) {
+      let x, r = vId % 10;
+      if (r == 0) {
+        oi[0] = [vId, f, oD, 0]
+      } else {
+        oi[0] = [vId, f, oD, oD]
+      }
+      vId = (vId - r) / 10;
+      n = 0;
+      while (vId) {
+        n++
+        x = vId * 10 ** n
+        r = vId % 10;
+        if (oi[n] && oi[n][0] == x) {
+          if (oi[n][1] != oi.f)
+            n--
+          break
+        } else {
+          chunk = segment(x, oi, s);
+          if (chunk.length == 0) {
+            chunk = Buffer.alloc(s);
+            fs.readSync(oi.idxF, chunk, 0, s, x * s)
+          }
+          f = B(chunk, b);
+          oD = chunk[b] * 65536 + chunk[b + 1] * 256 + chunk[b + 2];
+          if (f == oi.f) {
+            if (r == 0) {
+              oi[n] = [x, f, oD, 0]
+            } else {
+              oi[n] = [x, f, oD, oD]
+            }
+          } else {
+            n--
+            break
+          }
+        }
+        vId = (vId - r) / 10
+      }
+      while (n) {
+        oi[n - 1][3] += oi[n][3];
+        n -= 1
+      }
+    }
+  }
+  this.createDatabase = function (db) {
+    let sT = Date.now();
+    if (typeof db != 'string') {
+      return {
+        error: "The 1st parameter 'db' must be 'string'",
+      }
+    }
+    else if(db.trim() === '') return {
+                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                }
+    if (!isDir(db)){ 
+      db = split(db, "/");
+      let db_ = "";
+      for (let d of db) {
+        db_ += d;
+        if (!isDir(db_)) {
+          fs.mkdirSync(path_mod.join(db_, ""))
+        }
+        db_ += "/"
+      }
+    }
+    else return {
+          error: "This Database exists .."
+        }
+    return {
+      time: (Date.now() - sT) + ' ms',
+      statement: !0
+    }
+  };
+  this.createTable = function (db, table = !1, clmn = [], dflt = []) {
+    let sT = Date.now();
+    if (typeof db != 'string') {
+      return {
+        error: "The 1st parameter 'db' must be 'string'",
+      }
+    }
+    else if(db.trim() === '') return {
+                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                }
+    if (typeof table != 'string') {
+      return {
+        error: "The 2nd parameter 'table' must be 'string'",
+      }
+    }
+    else if(table.trim() === '') return {
+                  error: "The 2nd parameter 'table' cannot be the empty string or all whitespace",
+                }
+    if (!isDir(db))
+      return {
+        error: "This database not found .."
+      }
+    const pathTb = `${db}/${table}`;
+    if (!isDir(pathTb)) {
+      if (!Array.isArray(clmn))
+        return {
+          error: "The 3rd parameter 'clmn' must a array .. "
+        };
+      if (!Array.isArray(dflt))
+        return {
+          error: "The 4th parameter 'dflt' must a array .. "
+        };
+      fs.mkdirSync(pathTb);
+      fs.mkdirSync(pathTb + "/d");
+      fs.mkdirSync(pathTb + "/i");
+      const refContent = "0|1\n" + "0|0|0|0\n" + "0|0|0|0|0|0|0|0|0|0|0";
+      fs.writeFileSync(pathTb + "/i/ref.txt", refContent);
+      const fIbContent = Buffer.alloc(4, " ");
+      fs.writeFileSync(pathTb + "/i/i1.hoc", fIbContent);
+      if (clmn.length != 0) {
+        initialCol(pathTb, clmn, dflt)
+      } else {
+        const refColContent = "0,{}";
+        fs.writeFileSync(pathTb + "/i/refCol.txt", refColContent)
+      }
+      fs.writeFileSync(pathTb + "/d/b0.txt", "")
+    } else {
+      return {
+        error: "This table exists .."
+      }
+    }
+    return {
+      time: (Date.now() - sT) + ' ms',
+      statement: !0
+    }
+  };
+
+  function check_in_params(pathDB, table, ids, lim) {
+    let chk = {}
+    if (typeof table != 'string')
+      return {
+        error: "The 1st parameter 'table' must be 'string'"
+      };
+    else if(table.trim() === '') return {
+                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                }
+    chk.pathTb = `${pathDB}/${table}`;
+    if (!fs.existsSync(chk.pathTb))
+      return {
+        error: "This table not found.."
+      };
+    if (!Array.isArray(ids))
+      return {
+        error: " The 3rd ids must a array .. "
+      };
+    if (ids.some(function (item) {
+      return !Number.isInteger(item)
+    })) {
+      return {
+        error: "all Id array items must a number"
+      }
+    }
+    if (Number.isInteger(lim)) {
+      if (lim < 0)
+        return {
+          error: "The 2nd argument (lim) ​​must be equal to or greater than zero"
+        }
+    } else return {
+      error: "The 4th argument (lim) must a number"
+    };
+    let vlsp = refData(chk.pathTb),
+      [vl, ifl] = vlsp;
+    let lastId = ifl[0];
+    if (Math.min(...ids) < 1 || lastId < Math.max(...ids))
+      return {
+        error: "all Id array items must be between 1 and " + (lastId + 1)
+      };
+    chk = {
+      ...chk,
+      vlsp: vlsp,
+      vl: vl,
+      ifl: ifl
+    }
+    return chk
+  }
+
+  function check_params(pathDB, table, id_, offs, lim) {
+    let chk = {}
+    if (typeof table != 'string')
+      return {
+        error: "The 1st parameter 'table' must be 'string'"
+      };
+    else if(table.trim() === '') return {
+                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                }
+    chk.pathTb = `${pathDB}/${table}`;
+    if (!fs.existsSync(chk.pathTb))
+      return {
+        error: "This table not found.."
+      };
+    if (Number.isInteger(id_)) {
+      if (id_ < 0)
+        return {
+          error: "The 2nd argument (Id) ​​must be equal to or greater than zero"
+        }
+    } else return {
+      error: "The 2nd argument (Id) must a number"
+    };
+    if (Number.isInteger(offs) && offs) {
+      chk.offsNum = !0
+    } else if (typeof offs == "string" && (offs == "+" || offs == "-")) {
+      chk.offsNum = !1
+    } else return {
+      error: 'The 3rd argument (offs) must be greater or less than 0 or this "+" or "-" character'
+    };
+    if (Number.isInteger(lim)) {
+      if (lim < 0)
+        return {
+          error: "The 2nd argument (lim) ​​must be equal to or greater than zero"
+        }
+    } else return {
+      error: "The 4th argument (lim) must a number"
+    };
+    let vlsp = refData(chk.pathTb),
+      [vl, ifl] = vlsp;
+    let lastId = ifl[0];
+    if (id_ == 0) id_ = lastId;
+    if (lastId < id_)
+      return {
+        error: "The Id must be between 1 and " + (lastId + 1)
+      };
+    chk = {
+      ...chk,
+      vlsp: vlsp,
+      vl: vl,
+      ifl: ifl,
+      id_: id_,
+      lastId: lastId
+    }
+    return chk
+  }
+
+  function check_insert_params(pathDB, table, clmn) {
+    if (typeof table != 'string') {
+      return {
+        error: "The 1st parameter 'table' must be 'string'"
+      }
+    }
+    else if(table.trim() === '') return {
+                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                }
+    let pathTb = `${pathDB}/${table}`;
+    if (!fs.existsSync(pathTb)) {
+      return {
+        error: "This table not found.."
+      }
+    }
+    if (clmn !== "*" && !Array.isArray(clmn)) {
+      return {
+        error: " Columns must a array .. "
+      }
+    }
+    
+    return {
+      pathTb: pathTb,
+      clmn: clmn,
+      clmnL: clmn.length
+    }
+  }
+  this.connectDB = function (db) {
+    var pathDB = `${DB_dir_path}/${db}`;
+    if (typeof db != 'string')
+      return {
+        error: "The 1st parameter 'db' must be 'string'"
+      };
+    else if(db.trim() === '') return {
+                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                }
+    if (!fs.existsSync(pathDB))
+      return {
+        error: "This table not found.."
+      };
+    return new (class {
+      constructor() { }
+      addColumn = function (table, clmn = [], dflt = []) {
+        let sT = Date.now();
+        if (typeof table != 'string') {
+          return {
+            error: "The 1st parameter 'table' must be 'string'"
+          }
+        }
+        else if(table.trim() === '') return {
+                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                    }
+        let col_L = clmn.length;
+        if (col_L) {
+          let pathTb = `${pathDB}/${table}`;
+          if (!fs.existsSync(pathTb)) {
+            return {
+              error: "This table not found.."
+            }
+          }
+          let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8");
+          let sp = split(refCol, ",", 1),
+            idx = Number(sp[0]);
+          let colName = JSON.parse(sp[1]),
+            ld = dflt.length;
+          let c, i = 0,
+            dflt_;
+          for (; i < col_L; i++) {
+            c = clmn[i];
+            if (!(c in colName)) {
+              if (i < ld) {
+                dflt_ = dflt[i].toString()
+              } else {
+                dflt_ = ""
+              }
+              colName[c] = [idx + i, dflt_]
+            } else {
+              return {
+                error: 'The column ("' + c + '") already exists'
+              }
+            }
+          }
+          fs.writeFileSync(pathTb + "/i/refCol.txt", (idx + i) + "," + JSON.stringify(colName))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          statement: !0
+        }
+      };
+      idIsLife = function (table, id_) {
+        let sT = Date.now();
+        if (typeof table != 'string') {
+          return {
+            time: (Date.now() - sT) + ' ms',
+            error: "The 1st parameter 'table' must be 'string'",
+          }
+        }
+        else if(table.trim() === '') return {
+                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                    }
+        let pathTb = `${pathDB}/${table}`;
+        if (!fs.existsSync(pathTb)) {
+          return {
+            time: (Date.now() - sT) + ' ms',
+            error: "This table not found..",
+          }
+        }
+        let [vl, ifl] = refData(pathTb);
+        let lastId = ifl[0];
+        if (id_ < 1 || lastId < id_)
+          return {
+            error: "The Id must be between 1 and " + (lastId + 1)
+          };
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let s = b + 3,
+          vId = id_ - vl[b] + 1,
+          idxF = fs.openSync(pathTb + "/i/i" + b + ".hoc", "r"),
+          chunk = Buffer.alloc(1);
+        if (fs.readSync(idxF, chunk, 0, 1, vId * s) != 0) {
+          if ((chunk[0] | 0x7f) != 255) {
+            return {
+              time: (Date.now() - sT) + ' ms',
+              count: 1,
+            }
+          }
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: 0,
+        }
+      };
+      lastId = function (table) {
+        let sT = Date.now();
+        if (typeof table != 'string') {
+          return {
+            error: "The 1st parameter 'table' must be 'string'"
+          }
+        }
+        else if(table.trim() === '') return {
+                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                    }
+        let pathTb = `${pathDB}/${table}`;
+        if (!fs.existsSync(pathTb)) {
+          return {
+            error: "This table not found.."
+          }
+        }
+        let [, ifl] = refData(pathTb), lastId = ifl[0];
+        return {
+          time: (Date.now() - sT) + ' ms',
+          lastId: lastId,
+        }
+      };
+      insert = function (table, clmn, val) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          ca,
+          clmnL
+        } = colForInsert(pathDB, table, clmn);
+        if (error) return {error: error};
+        
+        if (!Array.isArray(val)) {
+          return {
+            error: " Values must a array .. "
+          }
+        }
+        if (clmnL != val.length) {
+          return  {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}
+        }
+
+        let [vl, ifl, do_] = refData(pathTb), fz = vl.length - 1, b_z = 2 ** (8 * fz - 1), i_ = ifl[0], i = ifl[0] - ifl[1], vId = ifl[1] + 1, z = ifl[2], len_ = ifl[3], z_ = z, zs = [z_ & 0x7f];
+        z_ >>= 7;
+        while (z_ > 0) {
+          zs.push(z_ & 0xff);
+          z_ >>= 8
+        }
+        var l0, l_, strV = [],
+          c_sum = [],
+          d = {},
+          v, fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a"),
+          fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+        let c, ii, m, lid, c_s;
+        for (c = 0; c < clmnL; c++) {
+          v = Buffer.from(val[c].toString());
+          d[ca[c][0]] = [ca[c][1], base(250, v.length), v]
+        }
+        for (c in d) {
+          strV = [...strV, ...d[c][2]];
+          c_sum.push(...d[c][0], 255, ...d[c][1], 255)
+        }
+        c_s = base(250, c_sum.length);
+        l_ = 2 + c_s.length + c_sum.length + strV.length;
+        lid = base(250, l_);
+        ii = vId;
+        m = 0;
+        while (ii % 10 == 0) {
+          m += 1;
+          do_[m] = len_;
+          ii = ii / 10
+        }
+        l0 = len_ - do_[m + 1];
+        fs.writeFileSync(fDb, Buffer.from([...lid, 255, ...c_s, 255, ...c_sum, ...strV]));
+        fs.writeFileSync(fIb, Buffer.from([...zs, ...to_3_Bytes(l0)]));
+        len_ += lid.length + l_;
+        if (len_ > fsz) {
+          z += 1;
+          len_ = 0;
+          do_ = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+          if (z % b_z == 0) {
+            i += vId;
+            vId = 0;
+            fz += 1;
+            b_z = 2 ** (8 * fz - 1);
+            vl.push(i + 1);
+            fs.close(fIb, function (argument) { });
+            fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+            fs.writeFileSync(fIb, Buffer.alloc(fz + 3, " "))
+          }
+          z_ = z;
+          zs = [z_ & 0x7f];
+          z_ >>= 7;
+          while (z_ > 0) {
+            zs.push(z_ & 0xff);
+            z_ >>= 8
+          }
+          fs.close(fDb, function (argument) { });
+          fDb = openSync(pathTb + "/d/b" + z + ".txt", "wb")
+        }
+        fs.close(fIb, function (argument) { });
+        fs.close(fDb, function (argument) { });
+        i += vId;
+        if (i != i_) {
+          fs.writeFileSync(pathTb + "/i/ref.txt", vl.join("|") + "\n" + (i + "|" + vId + "|" + z + "|" + len_) + "\n" + do_.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: 1,
+          id: i,
+        }
+      };
+      insertMany = function (table, clmn, vals) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          ca,
+          clmnL
+        } = colForInsert(pathDB, table, clmn);
+        if (error) return {error: error};
+        
+        var vals_L;
+        if (!Array.isArray(vals) || (vals_L = vals.length) == 0) {
+          return {
+            error: " Values must a Two-dimensional array .. "
+          }
+        }
+
+        let [vl, ifl, do_] = refData(pathTb), fz = vl.length - 1, b_z = 2 ** (8 * fz - 1), i_ = ifl[0], i = ifl[0] - ifl[1], vId = ifl[1], z = ifl[2], len_ = ifl[3], z_ = z, zs = [z_ & 0x7f];
+        z_ >>= 7;
+        while (z_ > 0) {
+          zs.push(z_ & 0xff);
+          z_ >>= 8
+        }
+        var l0, v, l_, strV, c_sum, d, fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a"),
+            fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+        for (var val, j = 0; j < vals_L; j++) {
+          val = vals[j];
+          if (Array.isArray(val)) {
+            if (val.length != clmnL) {
+              return {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}
+
+            }
+          } else {
+            return {
+              error: " Values must a Two-dimensional array .. ",
+            }
+          }
+          
+          vId += 1;
+          strV = [];
+          c_sum = [];
+          d = {};
+          let c, ii, m, lid, c_s;
+          for (c = 0; c < clmnL; c++) {
+            v = Buffer.from(val[c].toString());
+            d[ca[c][0]] = [ca[c][1], base(250, v.length), v]
+          }
+          for (c in d) {
+            strV = [...strV, ...d[c][2]];
+            c_sum.push(...d[c][0], 255, ...d[c][1], 255)
+          }
+          c_s = base(250, c_sum.length);
+          l_ = 2 + c_s.length + c_sum.length + strV.length;
+          lid = base(250, l_);
+          ii = vId;
+          m = 0;
+          while (ii % 10 == 0) {
+            m += 1;
+            do_[m] = len_;
+            ii = ii / 10
+          }
+          l0 = len_ - do_[m + 1];
+          fs.writeFileSync(fDb, Buffer.from([...lid, 255, ...c_s, 255, ...c_sum, ...strV]));
+          fs.writeFileSync(fIb, Buffer.from([...zs, ...to_3_Bytes(l0)]));
+          len_ += lid.length + l_;
+          if (len_ > fsz) {
+            z += 1;
+            len_ = 0;
+            do_ = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            if (z % b_z == 0) {
+              i += vId;
+              vId = 0;
+              fz += 1;
+              b_z = 2 ** (8 * fz - 1);
+              vl.push(i + 1);
+              fs.close(fIb, function (argument) { });
+              fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+              fs.writeFileSync(fIb, Buffer.alloc(fz + 3, " "))
+            }
+            z_ = z;
+            zs = [z_ & 0x7f];
+            z_ >>= 7;
+            while (z_ > 0) {
+              zs.push(z_ & 0xff);
+              z_ >>= 8
+            }
+            fs.close(fDb, function (argument) { });
+            fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a")
+          }
+        }
+        i += vId;
+        fs.close(fIb, function (argument) { });
+        fs.close(fDb, function (argument) { });
+        if (i != i_) {
+          fs.writeFileSync(pathTb + "/i/ref.txt", vl.join("|") + "\n" + (i + "|" + vId + "|" + z + "|" + len_) + "\n" + do_.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: i - i_,
+          id: i,
+        }
+      };
+      insertCsv = function (table, csvFP, clmn, option = {}) {
+        var {
+          error,
+          pathTb,
+          ca,
+          clmnL
+        } = colForInsert(pathDB, table, clmn);
+        if (error) return {error: error};
+        if (typeof csvFP != 'string') {
+          return {error: "The 2nd parameter file path 'csvFP' must be 'string'"}
+        }
+        else if(csvFP.trim() === '') return {
+                      error: "The 2nd parameter file path 'csvFP' cannot be the empty string or all whitespace",
+                    }
+        if (typeof option != 'object') {
+          return {error: "The 4th parameter 'option' must be 'object'"}
+        }
+        option.json = !1;
+        const parse = parseCsv(csvFP, option);
+
+        function callCSV(type) {
+          return function (...args) {
+            let sT = Date.now();
+            let [vl, ifl, do_] = refData(pathTb), fz = vl.length - 1, b_z = 2 ** (8 * fz - 1), i_ = ifl[0], i = ifl[0] - ifl[1], vId = ifl[1], z = ifl[2], len_ = ifl[3], z_ = z, zs = [z_ & 0x7f];
+            z_ >>= 7;
+            while (z_ > 0) {
+              zs.push(z_ & 0xff);
+              z_ >>= 8
+            }
+            let result, vals, vals_L;
+            if (type == "chunk") result = parse.chunk(...args);
+            else if ("rowOffset") result = parse.rowOffset(...args);
+            if (result.row_count) vals = result.rows;
+            if (!Array.isArray(vals)) {
+              return {error: " Incorrect CSV format: rows must be an array "}
+            } 
+            if ((vals_L = vals.length) == 0) {
+              return {error: " CSV file rows are empty, no data is displayed "}
+            }
+            var l0, v, l_, strV, c_sum, d, fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a"),
+              fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+            let c, ii, m, lid, c_s;
+            for (var val, j = 0; j < vals_L; j++) {
+              val = vals[j];
+              if (Array.isArray(val)) {
+                if (val.length != clmnL) {
+                  return {error: " Incorrect number of columns: Header ("+clmnL+") and Row ("+val.length+") sizes don't match "}
+                }
+              } else {
+                return {error: " Incorrect CSV Format. Number of headers and the number of values in each row must be equal "}
+              }
+              vId += 1;
+              strV = [];
+              c_sum = [];
+              d = {};
+              let c, ii, m, lid, c_s;
+              for (c = 0; c < clmnL; c++) {
+                v = Buffer.from(val[c].toString());
+                d[ca[c][0]] = [ca[c][1], base(250, v.length), v]
+              }
+              for (c in d) {
+                strV = [...strV, ...d[c][2]];
+                c_sum.push(...d[c][0], 255, ...d[c][1], 255)
+              }
+              c_s = base(250, c_sum.length);
+              l_ = 2 + c_s.length + c_sum.length + strV.length;
+              lid = base(250, l_);
+              ii = vId;
+              m = 0;
+              while (ii % 10 == 0) {
+                m += 1;
+                do_[m] = len_;
+                ii = ii / 10
+              }
+              l0 = len_ - do_[m + 1];
+              fs.writeFileSync(fDb, Buffer.from([...lid, 255, ...c_s, 255, ...c_sum, ...strV]));
+              fs.writeFileSync(fIb, Buffer.from([...zs, ...to_3_Bytes(l0)]));
+              len_ += lid.length + l_;
+              if (len_ > fsz) {
+                z += 1;
+                len_ = 0;
+                do_ = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                if (z % b_z == 0) {
+                  i += vId;
+                  vId = 0;
+                  fz += 1;
+                  b_z = 2 ** (8 * fz - 1);
+                  vl.push(i + 1);
+                  fs.close(fIb, function (argument) { });
+                  fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
+                  fs.writeFileSync(fIb, Buffer.alloc(fz + 3, " "))
+                }
+                z_ = z;
+                zs = [z_ & 0x7f];
+                z_ >>= 7;
+                while (z_ > 0) {
+                  zs.push(z_ & 0xff);
+                  z_ >>= 8
+                }
+                fs.close(fDb, function (argument) { });
+                fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a")
+              }
+            }
+            i += vId;
+            fs.close(fIb, function (argument) { });
+            fs.close(fDb, function (argument) { });
+            if (i != i_) {
+              fs.writeFileSync(pathTb + "/i/ref.txt", vl.join("|") + "\n" + (i + "|" + vId + "|" + z + "|" + len_) + "\n" + do_.join("|"))
+            }
+            return {
+              time: (Date.now() - sT) + ' ms',
+              count: i - i_,
+              id: i,
+            }
+          }
+        }
+        return new (class {
+          constructor() { }
+          chunk = callCSV("chunk");
+          rowOffset = callCSV("rowOffset")
+        })()
+      };
+      select = function (table, id_, offs, lim, clmn = "*") {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1])
+        var {
+          error,
+          colN,
+          colval
+        } = getCol(colName, clmn, 'colN', 'colval');
+        if (error)
+          return {
+            error: error
+          }
+        let lN = Object.keys(colN).length;
+        var rows = [];
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN));
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN))
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            } else {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN));
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN))
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN));
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN))
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            } else {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN));
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    rows.push(slc({
+                      id: id_,
+                      ...colval
+                    }, colN, oi.idFr, oi[0][3], lN))
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            }
+          }
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: rows.length,
+          rows: rows,
+        }
+      };
+      selectIn = function (table, ids, lim, clmn = "*") {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1])
+        var {
+          error,
+          colN,
+          colval
+        } = getCol(colName, clmn, 'colN', 'colval');
+        if (error)
+          return {
+            error: error
+          }
+        let lN = Object.keys(colN).length;
+        var rows = [];
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            getOffs(_pathX, _pathD, oi);
+            if (oi[0]) {
+              rows.push(slc({
+                id: id_,
+                ...colval
+              }, colN, oi.idFr, oi[0][3], lN))
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            getOffs(_pathX, _pathD, oi);
+            if (oi[0]) {
+              rows.push(slc({
+                id: id_,
+                ...colval
+              }, colN, oi.idFr, oi[0][3], lN))
+            }
+          }
+        fs.close(oi.idxF, function (argument) { });
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: rows.length,
+          rows: rows,
+        }
+      };
+      search = function (table, id_, offs, lim, clmn = "*", coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1])
+        var {
+          error,
+          colN,
+          colval
+        } = getCol(colName, clmn, 'colN', 'colval');
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var rows = [],
+          row;
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row);
+                      lim--;
+                      if (!lim) break
+                    }
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row)
+                    }
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            } else {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row);
+                      lim--;
+                      if (!lim) break
+                    }
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row)
+                    }
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row);
+                      lim--;
+                      if (!lim) break
+                    }
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row)
+                    }
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            } else {
+              if (lim) {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row);
+                      lim--;
+                      if (!lim) break
+                    }
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              } else {
+                getOffs(_pathX, _pathD, oi);
+                while (oi.r) {
+                  if (oi[0]) {
+                    row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+                    if (row) {
+                      rows.push(row)
+                    }
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  getOffs(_pathX, _pathD, oi)
+                }
+              }
+            }
+          }
+        }
+        fs.close(oi.idxF, function (argument) { });
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: rows.length,
+          rows: rows,
+        }
+      };
+      searchIn = function (table, ids, lim, clmn = "*", coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1])
+        var {
+          error,
+          colN,
+          colval
+        } = getCol(colName, clmn, 'colN', 'colval');
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var rows = [],
+          row;
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            getOffs(_pathX, _pathD, oi);
+            if (oi[0]) {
+              row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+              if (row) {
+                rows.push(row)
+              }
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            getOffs(_pathX, _pathD, oi);
+            if (oi[0]) {
+              row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
+              if (row) {
+                rows.push(row)
+              }
+            }
+          }
+        fs.close(oi.idxF, function (argument) { });
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: rows.length,
+          rows: rows,
+        }
+      };
+      update = function (table, id_, offs, lim, clmn, vals) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          setV
+        } = colForUpd(pathTb, clmn, vals);
+        if (error) return {error: error};
+        let ls = Object.keys(setV).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    upd(oi, updInfo.rUpd, setV, ls)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      updateIn = function (table, ids, lim, clmn, vals) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          setV
+        } = colForUpd(pathTb, clmn, vals);
+        if (error) return {error: error};
+        let ls = Object.keys(setV).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              upd(oi, updInfo.rUpd, setV, ls)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              upd(oi, updInfo.rUpd, setV, ls)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      updateIf = function (table, id_, offs, lim, clmn, coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, clmn);
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      updateInIf = function (table, ids, lim, clmn, coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, clmn);
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      change = function (table, id_, offs, lim, clmn, vals) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          setV
+        } = colForUpd(pathTb, clmn, vals);
+        if (error) return {error: error};
+        let strV = [],
+          c_sum = [];
+        for (let x in setV) {
+          strV = [...strV, ...setV[x][2]];
+          c_sum.push(...setV[x][0], 255, ...setV[x][1], 255)
+        }
+        let c_s = base(250, c_sum.length)
+        let l_ = 2 + c_s.length + c_sum.length + strV.length;
+        var stb = [...base(250, l_), 255, ...c_s, 255, ...c_sum, ...strV];
+        var newLen = stb.length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        };
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chng(oi, updInfo.rUpd, stb, newLen)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      changeIn = function (table, ids, lim, clmn, vals) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          setV
+        } = colForUpd(pathTb, clmn, vals);
+        if (error) return {error: error};
+        let strV = [],
+          c_sum = [];
+        for (let x in setV) {
+          strV = [...strV, ...setV[x][2]];
+          c_sum.push(...setV[x][0], 255, ...setV[x][1], 255)
+        }
+        let c_s = base(250, c_sum.length)
+        let l_ = 2 + c_s.length + c_sum.length + strV.length;
+        var stb = [...base(250, l_), 255, ...c_s, 255, ...c_sum, ...strV];
+        var newLen = stb.length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              chng(oi, updInfo.rUpd, stb, newLen)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              chng(oi, updInfo.rUpd, stb, newLen)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      changeIf = function (table, id_, offs, lim, clmn, coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, clmn);
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      changeInIf = function (table, ids, lim, clmn, coClmn = "*", chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, clmn);
+        if (error)
+          return {
+            error: error
+          }
+        var {
+          error,
+          colCN,
+          colCV
+        } = getCol(colName, coClmn, 'colCN', 'colCV');
+        if (error)
+          return {
+            error: error
+          }
+        let lNC = Object.keys(colN).length + Object.keys(colCN).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveU(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      delete = function (table, id_, offs, lim) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var updInfo = {
+          del: !0,
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.xf = chunk.slice(0, b)
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDel(oi, updInfo.rUpd)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveD(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      deleteIn = function (table, ids) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0,
+          del: !0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.xf = chunk.slice(0, b)
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              iDel(oi, updInfo.rUpd)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.xf = chunk.slice(0, b)
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              iDel(oi, updInfo.rUpd)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveD(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      deleteIf = function (table, id_, offs, lim, coClmn, chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          offsNum,
+          vlsp,
+          vl,
+          ifl,
+          id_,
+          lastId
+        } = check_params(pathDB, table, id_, offs, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, coClmn);
+        if (error)
+          return {
+            error: error
+          }
+        let lN = Object.keys(colN).length;
+        var updInfo = {
+          del: !0,
+          rUpd: {},
+          len_rUpd: 0
+        }
+        let vlL = vl.length;
+        for (var b = 2; b < vlL; b++) {
+          if (id_ < vl[b]) {
+            break
+          }
+        }
+        b -= 1;
+        let vId = id_ - vl[b] + 1;
+        var oi = {
+          b: b,
+          s: b + 3,
+          vl: vl,
+          vId: vId,
+          vId1: vId,
+          vId0: vId,
+          r: 1,
+        };
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        oi.idxF = fs.openSync(_pathX + oi.b + ".hoc", "r+");
+        let chunk = segment(vId, oi, oi.s);
+        oi.xf = chunk.slice(0, b)
+        oi.f = B(chunk, b);
+        oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt");
+        if (1) {
+          if (offsNum) {
+            if (offs > 0) {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+                  }
+                  offs -= 1;
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (offs && oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+                  }
+                  offs += 1;
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          } else {
+            if (offs == "+") {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+                  }
+                  id_ += 1;
+                  oi.vId += 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            } else {
+              if (lim) {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
+                    lim--;
+                    if (!lim) break
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              } else {
+                upd_offs(_pathX, _pathD, oi, updInfo);
+                while (oi.r) {
+                  if (oi[0]) {
+                    iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+                  }
+                  id_ -= 1;
+                  oi.vId -= 1;
+                  upd_offs(_pathX, _pathD, oi, updInfo)
+                }
+              }
+            }
+          }
+        }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveD(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      };
+      deleteInIf = function (table, ids, lim, coClmn, chekCond = cond) {
+        let sT = Date.now();
+        var {
+          error,
+          pathTb,
+          vlsp,
+          vl,
+          ifl
+        } = check_in_params(pathDB, table, ids, lim)
+        if (error)
+          return {
+            error: error
+          }
+        let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
+          colName = JSON.parse(split(refCol, ",", 1)[1]);
+        var {
+          error,
+          colN,
+          colval,
+          cn
+        } = getColForUpdIf(colName, coClmn);
+        if (error)
+          return {
+            error: error
+          }
+        let lN = Object.keys(colN).length;
+        var updInfo = {
+          rUpd: {},
+          len_rUpd: 0,
+          del: !0
+        }
+        let _pathX = pathTb + "/i/i",
+          _pathD = pathTb + "/d/b";
+        var s = 3,
+          b2 = 1,
+          b = 0;
+        var vId, oi = {
+          vl: vl,
+          r: 1
+        };
+        oi.idxF = fs.openSync(_pathX + 1 + ".hoc", "r+");
+        let chunk;
+        if (lim)
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.xf = chunk.slice(0, b)
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+            }
+            lim--
+            if (lim == 0)
+              break
+          } else
+          for (var id_ of ids) {
+            if (vl[b2] && vl[b2] <= id_) {
+              b += 1;
+              while (vl[b] && vl[b] <= id_) {
+                b++
+              }
+              b2 = b;
+              b -= 1;
+              oi.b = b;
+              fs.close(oi.idxF, function (argument) { });
+              oi.idxF = fs.openSync(_pathX + b + ".hoc", "r+");
+              vId = oi.vId = oi.vId1 = id_ - vl[b] + 1;
+              s = oi.s = b + 3;
+              chunk = segment(vId, oi, s);
+              oi.xf = chunk.slice(0, b)
+              oi.f = B(chunk, b);
+              oi.idFr = fs.readFileSync(_pathD + oi.f + ".txt")
+            } else vId = oi.vId = id_ - vl[b] + 1;
+            upd_offs(_pathX, _pathD, oi, updInfo);
+            if (oi[0]) {
+              iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
+            }
+          }
+        let l_rUpd;
+        if ((l_rUpd = Object.keys(updInfo.rUpd).length) != 0) {
+          saveD(_pathD, oi, updInfo.rUpd);
+          updInfo.len_rUpd += l_rUpd
+        }
+        fs.close(oi.idxF, function (argument) { });
+        if (ifl[2] == oi.f && oi.difOffs) {
+          let doLast = vlsp[2];
+          let n = 1;
+          while (n <= oi.difOffs[1]) {
+            doLast[n] += oi.difOffs[0];
+            n += 1
+          }
+          let ifl = vlsp[1];
+          ifl[3] = ifl[3] + oi.difOffs[0];
+          fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
+        }
+        return {
+          time: (Date.now() - sT) + ' ms',
+          count: updInfo.len_rUpd,
+        }
+      }
+    })()
+  }
+}
