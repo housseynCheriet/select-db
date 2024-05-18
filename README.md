@@ -70,7 +70,7 @@ require("select-db")();
 
 var db = 'db';
 
-const result = createDataBase(db) // db: String includes folder path when you want to create your database
+const result = createDatabase(db) // db: String includes folder path when you want to create your database
 // result -> {statement : true}
 ```
 
