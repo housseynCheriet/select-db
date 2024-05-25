@@ -1299,7 +1299,7 @@ module.exports = function () {
                 }
     if (!fs.existsSync(pathDB))
       return {
-        error: "This table not found.."
+        error: "This database not found.."
       };
     return new (class {
       constructor() { }
@@ -1630,7 +1630,6 @@ module.exports = function () {
         }
         option.json = !1;
         const parse = parseCsv(csvFP, option);
-
         function callCSV(type) {
           return function (...args) {
             let sT = Date.now();
@@ -1641,6 +1640,7 @@ module.exports = function () {
               z_ >>= 8
             }
             let result, vals, vals_L;
+
             if (type == "chunk") result = parse.chunk(...args);
             else if (type == "rowOffset") result = parse.rowOffset(...args);
             if (result.error) 
