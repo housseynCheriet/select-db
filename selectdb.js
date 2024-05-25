@@ -1642,7 +1642,10 @@ module.exports = function () {
             }
             let result, vals, vals_L;
             if (type == "chunk") result = parse.chunk(...args);
-            else if ("rowOffset") result = parse.rowOffset(...args);
+            else if (type == "rowOffset") result = parse.rowOffset(...args);
+            if (result.error) 
+              return result;
+            
             if (result.row_count) vals = result.rows;
             if (!Array.isArray(vals)) {
               return {error: " Incorrect CSV format: rows must be an array "}
