@@ -1172,13 +1172,13 @@ module.exports = function () {
       };
     if (!Array.isArray(ids))
       return {
-        error: " The 3rd ids must a array .. "
+        error: " The 2nd ids must a array .. "
       };
     if (ids.some(function (item) {
       return !Number.isInteger(item)
     })) {
       return {
-        error: "all Id array items must a number"
+        error: "all IDs array items must a number"
       }
     }
     if (Number.isInteger(lim)) {
@@ -1187,14 +1187,14 @@ module.exports = function () {
           error: "The 2nd argument (lim) ​​must be equal to or greater than zero"
         }
     } else return {
-      error: "The 4th argument (lim) must a number"
+      error: "The 3rd argument (lim) must a number"
     };
     let vlsp = refData(chk.pathTb),
       [vl, ifl] = vlsp;
     let lastId = ifl[0];
     if (Math.min(...ids) < 1 || lastId < Math.max(...ids))
       return {
-        error: "all Id array items must be between 1 and " + (lastId + 1)
+        error: "all IDs array items must be between 1 and " + (lastId + 1)
       };
     chk = {
       ...chk,
