@@ -57,7 +57,7 @@ module.exports = function () {
   function getCol(colName, clmn, a, b) {
     if (clmn !== "*" && !Array.isArray(clmn)) {
       return {
-        error: " Columns must a array .. "
+        error: {error: " Columns must a array .. "}
       }
     }
     let colN = {},
@@ -74,7 +74,7 @@ module.exports = function () {
           colval[c] = colName[c][1]
         } else {
           return {
-            error: ' No column with this name "' + c + '" in the table .. '
+            error: {error: ' No column with this name "' + c + '" in the table .. '}
           }
         }
       }
@@ -92,9 +92,7 @@ module.exports = function () {
       clmn,
       clmnL
     } = check_insert_params(pathDB, table, clmn);
-    if (error) return {
-      error: error
-    };
+    if (error) return error;
     
     var refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
       sp = split(refCol, ",", 1);
@@ -111,7 +109,7 @@ module.exports = function () {
           ca.push([colName[c][0], base(250, colName[c][0])])
         } else {
           return {
-            error: ' No column with this name "' + c + '" in the table .. '
+            error: {error: ' No column with this name "' + c + '" in the table .. '}
           }
         }
       }
@@ -126,12 +124,12 @@ module.exports = function () {
   function colForUpd(pathTb, clmn, vals) {
     if (clmn !== "*" && !Array.isArray(clmn)) {
       return {
-        error: " Columns must a array .. "
+        error: {error: " Columns must a array .. "}
       }
     }
     if (!Array.isArray(vals)) {
       return {
-        error: " Values must a array .. "
+        error: {error: " Values must a array .. "}
       }
     }
     var refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
@@ -143,7 +141,7 @@ module.exports = function () {
     if (clmn === "*") {
       if (clmn.length != Object.keys(vals).length) {
         return {
-          error: " The length of the values in the array is not equal to the length of the columns in the table .. ",
+          error: {error: " The length of the values in the array is not equal to the length of the columns in the table .. "}
         }
       }
       for (let c in colName) {
@@ -154,7 +152,7 @@ module.exports = function () {
     } else {
       if (clmn.length != vals.length) {
         return {
-          error: " The length of the values in the array is not equal to the length of the columns .. ",
+          error: {error: " The length of the values in the array is not equal to the length of the columns .. "}
         }
       }
       for (let c of clmn) {
@@ -163,7 +161,7 @@ module.exports = function () {
           setV[colName[c][0]] = [base(250, colName[c][0]), base(250, newC.length), newC]
         } else {
           return {
-            error: ' No column with this name "' + c + '" in the table .. '
+            error: {error: ' No column with this name "' + c + '" in the table .. '}
           }
         }
         j++
@@ -177,7 +175,7 @@ module.exports = function () {
   function getColForUpdIf(colName, clmn) {
     if (clmn !== "*" && !Array.isArray(clmn)) {
       return {
-        error: " Columns must a array .. "
+        error: {error: " Columns must a array .. "}
       }
     }
     let colN = {},
@@ -197,7 +195,7 @@ module.exports = function () {
           cn[c] = [base(250, colName[c][0]), colName[c][0]]
         } else {
           return {
-            error: ' No column with this name "' + c + '" in the table .. '
+            error: {error: ' No column with this name "' + c + '" in the table .. '}
           }
         }
       }
@@ -1074,11 +1072,11 @@ module.exports = function () {
     let sT = Date.now();
     if (typeof db != 'string') {
       return {
-        error: "The 1st parameter 'db' must be 'string'",
+        error: {error: "The 1st parameter 'db' must be 'string'"}
       }
     }
     else if(db.trim() === '') return {
-                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'db' cannot be the empty string or all whitespace"}
                 }
     if (!isDir(db)){ 
       db = split(db, "/");
@@ -1092,7 +1090,7 @@ module.exports = function () {
       }
     }
     else return {
-          error: "This Database exists .."
+          error: {error: "This Database exists .."}
         }
     return {
       time: (Date.now() - sT) + ' ms',
@@ -1103,33 +1101,33 @@ module.exports = function () {
     let sT = Date.now();
     if (typeof db != 'string') {
       return {
-        error: "The 1st parameter 'db' must be 'string'",
+        error: {error: "The 1st parameter 'db' must be 'string'"}
       }
     }
     else if(db.trim() === '') return {
-                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'db' cannot be the empty string or all whitespace"}
                 }
     if (typeof table != 'string') {
       return {
-        error: "The 2nd parameter 'table' must be 'string'",
+        error: {error: "The 2nd parameter 'table' must be 'string'"}
       }
     }
     else if(table.trim() === '') return {
-                  error: "The 2nd parameter 'table' cannot be the empty string or all whitespace",
+                  error: {error: "The 2nd parameter 'table' cannot be the empty string or all whitespace"}
                 }
     if (!isDir(db))
       return {
-        error: "This database not found .."
+        error: {error: "This database not found .."}
       }
     const pathTb = `${db}/${table}`;
     if (!isDir(pathTb)) {
       if (!Array.isArray(clmn))
         return {
-          error: "The 3rd parameter 'clmn' must a array .. "
+          error: {error: "The 3rd parameter 'clmn' must a array .. "}
         };
       if (!Array.isArray(dflt))
         return {
-          error: "The 4th parameter 'dflt' must a array .. "
+          error: {error: "The 4th parameter 'dflt' must a array .. "}
         };
       fs.mkdirSync(pathTb);
       fs.mkdirSync(pathTb + "/d");
@@ -1147,7 +1145,7 @@ module.exports = function () {
       fs.writeFileSync(pathTb + "/d/b0.txt", "")
     } else {
       return {
-        error: "This table exists .."
+        error: {error: "This table exists .."}
       }
     }
     return {
@@ -1160,42 +1158,53 @@ module.exports = function () {
     let chk = {}
     if (typeof table != 'string')
       return {
-        error: "The 1st parameter 'table' must be 'string'"
+        error: {error: "The 1st parameter 'table' must be 'string'"}
       };
     else if(table.trim() === '') return {
-                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                 }
     chk.pathTb = `${pathDB}/${table}`;
     if (!fs.existsSync(chk.pathTb))
       return {
-        error: "This table not found.."
+        error: {error: "This table not found.."}
       };
     if (!Array.isArray(ids))
       return {
-        error: " The 2nd ids must a array .. "
+        error: {error: " The 2nd ids must a array .. "}
       };
     if (ids.some(function (item) {
       return !Number.isInteger(item)
     })) {
       return {
-        error: "all IDs array items must a number"
+        error: {error: "all IDs array items must a number"}
       }
     }
     if (Number.isInteger(lim)) {
       if (lim < 0)
         return {
-          error: "The 2nd argument (lim) ​​must be equal to or greater than zero"
+          error: {error: "The 2nd argument (lim) ​​must be equal to or greater than zero"}
         }
     } else return {
-      error: "The 3rd argument (lim) must a number"
+      error: {error: "The 3rd argument (lim) must a number"}
     };
     let vlsp = refData(chk.pathTb),
       [vl, ifl] = vlsp;
     let lastId = ifl[0];
-    if (Math.min(...ids) < 1 || lastId < Math.max(...ids))
+    if(lastId){
+      if (Math.min(...ids) < 1 || lastId < Math.max(...ids))
+        return {
+          error: {error: "all IDs array items must be equal to or less than the lastId: " + (lastId + 1),
+          count: 0,
+          rows: []}
+        };
+    }
+    else{
       return {
-        error: "all IDs array items must be between 1 and " + (lastId + 1)
-      };
+          error: {error: "Table has no record inserted" ,
+          count: 0,
+          rows: []}
+        };
+    }
     chk = {
       ...chk,
       vlsp: vlsp,
@@ -1209,47 +1218,57 @@ module.exports = function () {
     let chk = {}
     if (typeof table != 'string')
       return {
-        error: "The 1st parameter 'table' must be 'string'"
+        error: {error: "The 1st parameter 'table' must be 'string'"}
       };
     else if(table.trim() === '') return {
-                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                 }
     chk.pathTb = `${pathDB}/${table}`;
     if (!fs.existsSync(chk.pathTb))
       return {
-        error: "This table not found.."
+        error: {error: "This table not found.."}
       };
     if (Number.isInteger(id_)) {
       if (id_ < 0)
         return {
-          error: "The 2nd argument (Id) ​​must be equal to or greater than zero"
+          error: {error: "The 2nd argument (Id) ​​must be equal to or greater than zero"}
         }
     } else return {
-      error: "The 2nd argument (Id) must a number"
+      error: {error: "The 2nd argument (Id) must a number"}
     };
     if (Number.isInteger(offs) && offs) {
       chk.offsNum = !0
     } else if (typeof offs == "string" && (offs == "+" || offs == "-")) {
       chk.offsNum = !1
     } else return {
-      error: 'The 3rd argument (offs) must be greater or less than 0 or this "+" or "-" character'
+      error: {error: 'The 3rd argument (offs) must be greater or less than 0 or this "+" or "-" character'}
     };
     if (Number.isInteger(lim)) {
       if (lim < 0)
         return {
-          error: "The 2nd argument (lim) ​​must be equal to or greater than zero"
+          error: {error: "The 2nd argument (lim) ​​must be equal to or greater than zero"}
         }
     } else return {
-      error: "The 4th argument (lim) must a number"
+      error: {error: "The 4th argument (lim) must a number"}
     };
     let vlsp = refData(chk.pathTb),
       [vl, ifl] = vlsp;
     let lastId = ifl[0];
-    if (id_ == 0) id_ = lastId;
-    if (lastId < id_)
+    if(lastId){
+      if (id_ == 0) id_ = lastId;
+      if (lastId < id_)
+        return {
+          error: {error: "The Id must be equal to or less than the lastId: " + (lastId + 1)}
+        };
+    }
+    else{
       return {
-        error: "The Id must be between 1 and " + (lastId + 1)
-      };
+          error: {error: "Table has no record inserted" ,
+          count: 0,
+          rows: []}
+        };
+    }
+    
     chk = {
       ...chk,
       vlsp: vlsp,
@@ -1264,21 +1283,21 @@ module.exports = function () {
   function check_insert_params(pathDB, table, clmn) {
     if (typeof table != 'string') {
       return {
-        error: "The 1st parameter 'table' must be 'string'"
+        error: {error: "The 1st parameter 'table' must be 'string'"}
       }
     }
     else if(table.trim() === '') return {
-                  error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                 }
     let pathTb = `${pathDB}/${table}`;
     if (!fs.existsSync(pathTb)) {
       return {
-        error: "This table not found.."
+        error: {error: "This table not found.."}
       }
     }
     if (clmn !== "*" && !Array.isArray(clmn)) {
       return {
-        error: " Columns must a array .. "
+        error: {error: " Columns must a array .. "}
       }
     }
     
@@ -1292,14 +1311,14 @@ module.exports = function () {
     var pathDB = `${DB_dir_path}/${db}`;
     if (typeof db != 'string')
       return {
-        error: "The 1st parameter 'db' must be 'string'"
+        error: {error: "The 1st parameter 'db' must be 'string'"}
       };
     else if(db.trim() === '') return {
-                  error: "The 1st parameter 'db' cannot be the empty string or all whitespace",
+                  error: {error: "The 1st parameter 'db' cannot be the empty string or all whitespace"}
                 }
     if (!fs.existsSync(pathDB))
       return {
-        error: "This database not found.."
+        error: {error: "This database not found.."}
       };
     return new (class {
       constructor() { }
@@ -1307,18 +1326,18 @@ module.exports = function () {
         let sT = Date.now();
         if (typeof table != 'string') {
           return {
-            error: "The 1st parameter 'table' must be 'string'"
+            error: {error: "The 1st parameter 'table' must be 'string'"}
           }
         }
         else if(table.trim() === '') return {
-                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                      error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                     }
         let col_L = clmn.length;
         if (col_L) {
           let pathTb = `${pathDB}/${table}`;
           if (!fs.existsSync(pathTb)) {
             return {
-              error: "This table not found.."
+              error: {error: "This table not found.."}
             }
           }
           let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8");
@@ -1339,7 +1358,7 @@ module.exports = function () {
               colName[c] = [idx + i, dflt_]
             } else {
               return {
-                error: 'The column ("' + c + '") already exists'
+                error: {error: 'The column ("' + c + '") already exists'}
               }
             }
           }
@@ -1355,25 +1374,45 @@ module.exports = function () {
         if (typeof table != 'string') {
           return {
             time: (Date.now() - sT) + ' ms',
-            error: "The 1st parameter 'table' must be 'string'",
+            error: {error: "The 1st parameter 'table' must be 'string'"}
           }
         }
         else if(table.trim() === '') return {
-                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                      error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                     }
+        if (Number.isInteger(id_)) {
+          if (id_ < 0)
+            return {
+              error: {error: "The 2nd argument (Id) ​​must be equal to or greater than zero"}
+            }
+        } else return {
+          error: {error: "The 2nd argument (Id) must a number"}
+        };
         let pathTb = `${pathDB}/${table}`;
         if (!fs.existsSync(pathTb)) {
           return {
             time: (Date.now() - sT) + ' ms',
-            error: "This table not found..",
+            error: {error: "This table not found.."}
           }
         }
         let [vl, ifl] = refData(pathTb);
         let lastId = ifl[0];
-        if (id_ < 1 || lastId < id_)
+        if(lastId){
+          if (id_ == 0) id_ = lastId;
+          if (lastId < id_)
+            return {
+              error: {error: "The Id must be equal to or less than the lastId: " + (lastId + 1),
+              count: 0,
+              rows: []}
+            };
+        }
+        else{
           return {
-            error: "The Id must be between 1 and " + (lastId + 1)
-          };
+              error: {error: "Table has no record inserted" ,
+              count: 0,
+              rows: []}
+            };
+        }
         let vlL = vl.length;
         for (var b = 2; b < vlL; b++) {
           if (id_ < vl[b]) {
@@ -1402,16 +1441,16 @@ module.exports = function () {
         let sT = Date.now();
         if (typeof table != 'string') {
           return {
-            error: "The 1st parameter 'table' must be 'string'"
+            error: {error: "The 1st parameter 'table' must be 'string'"}
           }
         }
         else if(table.trim() === '') return {
-                      error: "The 1st parameter 'table' cannot be the empty string or all whitespace",
+                      error: {error: "The 1st parameter 'table' cannot be the empty string or all whitespace"}
                     }
         let pathTb = `${pathDB}/${table}`;
         if (!fs.existsSync(pathTb)) {
           return {
-            error: "This table not found.."
+            error: {error: "This table not found.."}
           }
         }
         let [, ifl] = refData(pathTb), lastId = ifl[0];
@@ -1428,15 +1467,15 @@ module.exports = function () {
           ca,
           clmnL
         } = colForInsert(pathDB, table, clmn);
-        if (error) return {error: error};
+        if (error) return error;
         
         if (!Array.isArray(val)) {
           return {
-            error: " Values must a array .. "
+            error: {error: " Values must a array .. "}
           }
         }
         if (clmnL != val.length) {
-          return  {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}
+          return  {error: {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}}
         }
 
         let [vl, ifl, do_] = refData(pathTb), fz = vl.length - 1, b_z = 2 ** (8 * fz - 1), i_ = ifl[0], i = ifl[0] - ifl[1], vId = ifl[1] + 1, z = ifl[2], len_ = ifl[3], z_ = z, zs = [z_ & 0x7f];
@@ -1517,12 +1556,12 @@ module.exports = function () {
           ca,
           clmnL
         } = colForInsert(pathDB, table, clmn);
-        if (error) return {error: error};
+        if (error) return error;
         
         var vals_L;
         if (!Array.isArray(vals) || (vals_L = vals.length) == 0) {
           return {
-            error: " Values must a Two-dimensional array .. "
+            error: {error: " Values must a Two-dimensional array .. "}
           }
         }
 
@@ -1538,12 +1577,12 @@ module.exports = function () {
           val = vals[j];
           if (Array.isArray(val)) {
             if (val.length != clmnL) {
-              return {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}
+              return {error: {error: " Incorrect number of values: Column ("+clmnL+") and Values ("+val.length+") sizes don't match "}}
 
             }
           } else {
             return {
-              error: " Values must a Two-dimensional array .. ",
+              error: {error: " Values must a Two-dimensional array .. "}
             }
           }
           
@@ -1618,15 +1657,15 @@ module.exports = function () {
           ca,
           clmnL
         } = colForInsert(pathDB, table, clmn);
-        if (error) return {error: error};
+        if (error) return error;
         if (typeof csvFP != 'string') {
-          return {error: "The 2nd parameter file path 'csvFP' must be 'string'"}
+          return {error: {error: "The 2nd parameter file path 'csvFP' must be 'string'"}}
         }
         else if(csvFP.trim() === '') return {
-                      error: "The 2nd parameter file path 'csvFP' cannot be the empty string or all whitespace",
+                      error: {error: "The 2nd parameter file path 'csvFP' cannot be the empty string or all whitespace"}
                     }
         if (typeof option != 'object') {
-          return {error: "The 4th parameter 'option' must be 'object'"}
+          return {error: {error: "The 4th parameter 'option' must be 'object'"}}
         }
         option.json = !1;
         const parse = parseCsv(csvFP, option);
@@ -1648,10 +1687,10 @@ module.exports = function () {
             
             if (result.row_count) vals = result.rows;
             if (!Array.isArray(vals)) {
-              return {error: " Incorrect CSV format: rows must be an array "}
+              return {error: {error: " Incorrect CSV format: rows must be an array "}}
             } 
             if ((vals_L = vals.length) == 0) {
-              return {error: " CSV file rows are empty, no data is displayed "}
+              return {error: {error: " CSV file rows are empty, no data is displayed "}}
             }
             var l0, v, l_, strV, c_sum, d, fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a"),
               fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
@@ -1660,10 +1699,10 @@ module.exports = function () {
               val = vals[j];
               if (Array.isArray(val)) {
                 if (val.length != clmnL) {
-                  return {error: " Incorrect number of columns: Header ("+clmnL+") and Row ("+val.length+") sizes don't match "}
+                  return {error: {error: " Incorrect number of columns: Header ("+clmnL+") and Row ("+val.length+") sizes don't match "}}
                 }
               } else {
-                return {error: " Incorrect CSV Format. Number of headers and the number of values in each row must be equal "}
+                return {error: {error: " Incorrect CSV Format. Number of headers and the number of values in each row must be equal "}}
               }
               vId += 1;
               strV = [];
@@ -1748,10 +1787,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1])
         var {
@@ -1759,10 +1795,7 @@ module.exports = function () {
           colN,
           colval
         } = getCol(colName, clmn, 'colN', 'colval');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lN = Object.keys(colN).length;
         var rows = [];
         let vlL = vl.length;
@@ -1934,10 +1967,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1])
         var {
@@ -1945,10 +1975,7 @@ module.exports = function () {
           colN,
           colval
         } = getCol(colName, clmn, 'colN', 'colval');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lN = Object.keys(colN).length;
         var rows = [];
         let _pathX = pathTb + "/i/i",
@@ -2035,10 +2062,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1])
         var {
@@ -2046,19 +2070,13 @@ module.exports = function () {
           colN,
           colval
         } = getCol(colName, clmn, 'colN', 'colval');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var rows = [],
           row;
@@ -2232,10 +2250,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1])
         var {
@@ -2243,19 +2258,13 @@ module.exports = function () {
           colN,
           colval
         } = getCol(colName, clmn, 'colN', 'colval');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var rows = [],
           row;
@@ -2343,15 +2352,12 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           setV
         } = colForUpd(pathTb, clmn, vals);
-        if (error) return {error: error};
+        if (error) return error;
         let ls = Object.keys(setV).length;
         var updInfo = {
           rUpd: {},
@@ -2518,15 +2524,12 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           setV
         } = colForUpd(pathTb, clmn, vals);
-        if (error) return {error: error};
+        if (error) return error;
         let ls = Object.keys(setV).length;
         var updInfo = {
           rUpd: {},
@@ -2625,10 +2628,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -2637,19 +2637,13 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, clmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var updInfo = {
           rUpd: {},
@@ -2816,10 +2810,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -2828,19 +2819,13 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, clmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var updInfo = {
           rUpd: {},
@@ -2939,15 +2924,12 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           setV
         } = colForUpd(pathTb, clmn, vals);
-        if (error) return {error: error};
+        if (error) return error;
         let strV = [],
           c_sum = [];
         for (let x in setV) {
@@ -3123,15 +3105,12 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           setV
         } = colForUpd(pathTb, clmn, vals);
-        if (error) return {error: error};
+        if (error) return error;
         let strV = [],
           c_sum = [];
         for (let x in setV) {
@@ -3239,10 +3218,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -3251,19 +3227,13 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, clmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var updInfo = {
           rUpd: {},
@@ -3430,10 +3400,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -3442,19 +3409,13 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, clmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var {
           error,
           colCN,
           colCV
         } = getCol(colName, coClmn, 'colCN', 'colCV');
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lNC = Object.keys(colN).length + Object.keys(colCN).length;
         var updInfo = {
           rUpd: {},
@@ -3553,10 +3514,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var updInfo = {
           del: !0,
           rUpd: {},
@@ -3724,10 +3682,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         var updInfo = {
           rUpd: {},
           len_rUpd: 0,
@@ -3828,10 +3783,7 @@ module.exports = function () {
           id_,
           lastId
         } = check_params(pathDB, table, id_, offs, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -3840,10 +3792,7 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, coClmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lN = Object.keys(colN).length;
         var updInfo = {
           del: !0,
@@ -4012,10 +3961,7 @@ module.exports = function () {
           vl,
           ifl
         } = check_in_params(pathDB, table, ids, lim)
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
           colName = JSON.parse(split(refCol, ",", 1)[1]);
         var {
@@ -4024,10 +3970,7 @@ module.exports = function () {
           colval,
           cn
         } = getColForUpdIf(colName, coClmn);
-        if (error)
-          return {
-            error: error
-          }
+        if (error) return error;
         let lN = Object.keys(colN).length;
         var updInfo = {
           rUpd: {},
