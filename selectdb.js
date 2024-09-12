@@ -450,9 +450,7 @@ module.exports = function () {
   function slc(colval, colN, c_, offs, lN) {
     let b = 1000,
       c = c_.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x;
     while (i < b) {
       if (c[i] == 255) {
@@ -471,9 +469,12 @@ module.exports = function () {
           if (m + i > c.length)
             c = c_.slice(offs, m + i)
         }
-        m = 0
+        m = n = 0
         h++
-      } else m = m * 250 + c[i];
+      } else {
+        m += c[i] * (250 ** n)
+        n++;
+      }
       i++
     }
     return colval
@@ -489,9 +490,7 @@ module.exports = function () {
     let offs = oi[0][3],
       b = 1000,
       c = oi.idFr.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x;
     while (i < b) {
       if (c[i] == 255) {
@@ -520,9 +519,12 @@ module.exports = function () {
           if (m + i > c.length)
             c = oi.idFr.slice(offs, m + i)
         }
-        m = 0
+        m = n = 0
         h++
-      } else m = m * 250 + c[i];
+      } else {
+        m += c[i] * (250 ** n)
+        n++;
+      }
       i++
     }
     var _get = {};
@@ -541,9 +543,7 @@ module.exports = function () {
     let offs = oi[0][3],
       b = 1000,
       c = oi.idFr.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x, a = [
         [],
         []
@@ -573,10 +573,11 @@ module.exports = function () {
           if (l_ > c.length)
             c = oi.idFr.slice(offs, l_)
         }
-        m = 0
+        m = n = 0
         h++
       } else {
-        m = m * 250 + c[i];
+        m += c[i] * (250 ** n)
+        n++;
         if (h > 1) {
           a[h % 2].push(c[i])
         }
@@ -615,9 +616,7 @@ module.exports = function () {
       };
     let b = 1000,
       c = oi.idFr.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x, a = [
         [],
         []
@@ -658,10 +657,11 @@ module.exports = function () {
           if (l_ > c.length)
             c = oi.idFr.slice(offs, l_)
         }
-        m = 0
+        m = n = 0
         h++
       } else {
-        m = m * 250 + c[i];
+        m += c[i] * (250 ** n)
+        n++;
         if (h > 1) {
           a[h % 2].push(c[i])
         }
@@ -726,9 +726,7 @@ module.exports = function () {
       };
     let b = 1000,
       c = oi.idFr.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x, a = [
         [],
         []
@@ -767,10 +765,11 @@ module.exports = function () {
           if (l_ > c.length)
             c = oi.idFr.slice(offs, l_)
         }
-        m = 0
+        m = n = 0
         h++
       } else {
-        m = m * 250 + c[i];
+        m += c[i] * (250 ** n)
+        n++;
         if (h > 1) {
           a[h % 2].push(c[i])
         }
@@ -825,9 +824,7 @@ module.exports = function () {
       };
     let b = 1000,
       c = oi.idFr.slice(offs, offs + b),
-      h = 0,
-      m = 0,
-      i = 0,
+      h = n = m = i = 0,
       l, x;
     while (i < b) {
       if (c[i] == 255) {
@@ -847,9 +844,12 @@ module.exports = function () {
           if (l_ > c.length)
             c = oi.idFr.slice(offs, l_)
         }
-        m = 0
+        m = n = 0
         h++
-      } else m = m * 250 + c[i];
+      } else {
+        m += c[i] * (250 ** n)
+        n++;
+      }
       i++
     }
     if (chekCond(id_, colval)) {
