@@ -449,9 +449,9 @@ module.exports = function () {
 
   function slc(colval, colN, c_, offs, lN) {
     let b = 1000,
-      c = c_.slice(offs, offs + b),
-      h = n = m = i = 0,
-      l, x;
+    c = c_.slice(offs, offs + b),
+    h = n = m = i = 0,
+    l, x;
     while (i < b) {
       if (c[i] == 255) {
         if (h > 1) {
@@ -466,8 +466,10 @@ module.exports = function () {
         } else if (h) {
           l = b = m + i + 1
         } else {
-          if (m + i > c.length)
-            c = c_.slice(offs, m + i)
+          if (m + i > b){
+            b = m + i
+            c = c_.slice(offs, offs + b)
+          }
         }
         m = n = 0
         h++
@@ -516,8 +518,10 @@ module.exports = function () {
         } else if (h) {
           l = b = m + i + 1
         } else {
-          if (m + i > c.length)
-            c = oi.idFr.slice(offs, m + i)
+          if (m + i > b){
+            b = m + i
+            c = oi.idFr.slice(offs, offs + b)  
+          }
         }
         m = n = 0
         h++
@@ -570,8 +574,10 @@ module.exports = function () {
           l = b = m + i + 1
         } else {
           l_ = m + i
-          if (l_ > c.length)
-            c = oi.idFr.slice(offs, l_)
+          if (l_ > b){
+            b = l_
+            c = oi.idFr.slice(offs, offs + b)
+          }
         }
         m = n = 0
         h++
@@ -654,8 +660,10 @@ module.exports = function () {
           l = b = m + i + 1
         } else {
           l_ = m + i
-          if (l_ > c.length)
-            c = oi.idFr.slice(offs, l_)
+          if (l_ > b){
+            b = l_
+            c = oi.idFr.slice(offs, offs + b)
+          }
         }
         m = n = 0
         h++
@@ -762,8 +770,10 @@ module.exports = function () {
           l = b = m + i + 1
         } else {
           l_ = m + i
-          if (l_ > c.length)
-            c = oi.idFr.slice(offs, l_)
+          if (l_ > b){
+            b = l_
+            c = oi.idFr.slice(offs, offs + b)
+          }
         }
         m = n = 0
         h++
@@ -841,8 +851,10 @@ module.exports = function () {
           l = b = m + i + 1
         } else {
           l_ = m + i
-          if (l_ > c.length)
-            c = oi.idFr.slice(offs, l_)
+          if (l_ > b){
+            b = l_
+            c = oi.idFr.slice(offs, offs + b)
+          }
         }
         m = n = 0
         h++
