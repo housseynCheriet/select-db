@@ -1256,7 +1256,7 @@ module.exports = function () {
     }
     else{
       return {
-          error: {record: "Table has no record inserted (The table is empty)" ,
+          error: {record_statut: "Table has no record inserted (The table is empty)" ,
           count: 0,
           rows: []}
         };
@@ -1319,7 +1319,7 @@ module.exports = function () {
     }
     else{
       return {
-          error: {record: "Table has no record inserted (The table is empty)" ,
+          error: {record_statut: "Table has no record inserted (The table is empty)" ,
           count: 0,
           rows: []}
         };
@@ -1486,7 +1486,7 @@ module.exports = function () {
         }
         else{
           return {
-              error: {record: "Table has no record inserted (The table is empty)" ,
+              error: {record_statut: "Table has no record inserted (The table is empty)" ,
               count: 0}
             };
         }
