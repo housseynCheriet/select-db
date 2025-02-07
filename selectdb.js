@@ -93,23 +93,23 @@ module.exports = function () {
       clmnL
     } = check_insert_params(pathDB, table, clmn);
     if (error) return error;
-    
+
     var refCol = fs.readFileSync(pathTb + "/i/refCol.txt", "utf8"),
       sp = split(refCol, ",", 1);
     var j=0,colName = JSON.parse(sp[1]),
-      //ca = [];
+
       ca = {};
     if (clmn === "*") {
       clmnL = Object.keys(colName).length
       for (let c in colName) {
-        //ca.push([colName[c][0], base(250, colName[c][0])])
+
         ca[colName[c][0]]=[j, base(250, colName[c][0])]
         j++;
       }
     } else {
       for (let c of clmn) {
         if (c in colName) {
-          //ca.push([colName[c][0], base(250, colName[c][0])])
+
           ca[colName[c][0]]=[j, base(250, colName[c][0])]
           j++;
         } else {
@@ -162,7 +162,7 @@ module.exports = function () {
       }
       for (let c of clmn) {
         if (c in colName) {
-          ////comment_console////com2//console.log('::::',c,colName[c])
+
           newC = Buffer.from(''+vals[j]);
           setV[colName[c][0]] = [...base(250, colName[c][0]), 254, ...base(250, newC.length), 253, ...newC]
           j++
@@ -171,10 +171,10 @@ module.exports = function () {
             error: {error: ' No column with this name "' + c + '" in the table .. '}
           }
         }
-        
+
       }
     }
-    ////comment_console////com2//console.log(',,,,',setV,clmn,'..')
+
     return {
       setV: setV
     }
@@ -193,7 +193,7 @@ module.exports = function () {
       for (let c in colName) {
         colN[colName[c][0]] = c;
         colval[c] = colName[c][1];
-        //cn[c] = [base(250, colName[c][0]), colName[c][0]]
+
         cn[c] = [colName[c][0], base(250, colName[c][0])]
       }
     } else {
@@ -201,7 +201,7 @@ module.exports = function () {
         if (c in colName) {
           colN[colName[c][0]] = c;
           colval[c] = colName[c][1];
-          //cn[c] = [base(250, colName[c][0]), colName[c][0]]
+
           cn[c] = [colName[c][0], base(250, colName[c][0])]
         } else {
           return {
@@ -265,9 +265,7 @@ module.exports = function () {
     let vI_ = vId_ + 1;
     if (1) {
       o = vI_ * oi.s;
-      //let chunkX = segment(vI_, oi, oi.s);
-      ////comment_console////com2//console.log('_____ vId ____',chunkX.length,B(chunkX, oi.b),oi.f,di.reduce((a, b) => a + b, 0))
-      //comment_console////com2//console.log(di)
+
       let t_DifO = di.reduce((a, b) => a + b, 0);
       if (t_DifO != 0) {
         let chunkX,
@@ -286,10 +284,10 @@ module.exports = function () {
           }
           difO = di[n];
           chunkX = segment(vI_, oi, oi.s);
-          //comment_console////com2//console.log('********',vI_,chunkX,chunkX.length,n,difO,di)
+
           if (chunkX.length && B(chunkX, b) == oi.f) {
             l0 = chunkX[b] * 65536 + chunkX[b + 1] * 256 + chunkX[b + 2] + difO;
-            //comment_console////com2//console.log('=========',chunkX,o,b,to_3_Bytes(l0),oi.s)
+
             fs.writeSync(oi.idxF, Buffer.from(to_3_Bytes(l0)), 0, 3, o + b);
 
             vI_ += m;
@@ -304,12 +302,12 @@ module.exports = function () {
         if (chunkX.length == 0) 
           oi.difOffs = [di.reduce((a, b) => a + b, 0), n]
       }
-    
+
     }
   }
 
   function saveU(oi, rUpd) {
-    //com2//console.log('----------- saveU ---------',rUpd)
+
     var oUpd, ii, n, vId_, vId, rUpdVid, l0, s = oi.s,
       b = oi.b;
     var di = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -344,7 +342,7 @@ module.exports = function () {
       vId_ = vId;
       oUpd = rUpdVid.o[1] + rUpdVid.lenId;
       fs.writeFileSync(fDb, Buffer.from(rUpdVid.ids));
-      //com2//console.log(':::::::::::::::::::::',n,di,rUpdVid.ids)
+
       if (di[n] != 0) {
         l0 = rUpdVid.o[0] + di[n];
         fs.writeSync(oi.idxF, Buffer.from(to_3_Bytes(l0)), 0, 3, vId * s + b)
@@ -451,22 +449,9 @@ module.exports = function () {
         if (lN == 0)
           break
       }
-      //dd(vId)
-      //if(x==8)
-      //  break
-      /*if(x==k){
-          let cc = arrFetching(c.slice(i-m, i ))
-          if(cc){
-              c.splice(s, i-s)
-              return c.unshift(...cc);
-          }
-      }*/
-      //c.slice(i-m, i )
-      ////comment_console////com2//console.log('-- fetch_ing --',c.slice(i-m, i )) //js
-      //c.toString("utf-8", i-m, i)
-      ////comment_console////com2//console.log('-- fetch_ing --',vId,x,c.toString("utf-8", i-m, i))
+
     }
-    //comment_console////com2//console.log(colval.id)
+
     return colval
   }
 
@@ -478,7 +463,7 @@ module.exports = function () {
       colCV = {
         ...colCV_,
       };
-    
+
     let m , x, n, i = oi[0][3]+c[oi[0][3]];
     while(c[i]!=255){
       x = n = 0;
@@ -521,16 +506,13 @@ module.exports = function () {
   }
 
   function upd(oi, rUpd, setV_, ls) {
-    let s,r,//d = {},
+    let s,r,
     c = oi.idFr,
     setV = {
         ...setV_
       };
 
-    
-
     let m , x, n, offs = oi[0][3], i = offs+c[offs];
-    
 
     while(c[i]!=255){
       s = i ;
@@ -548,9 +530,9 @@ module.exports = function () {
           i++;
       }
       i+=1+m
-      ////comment_console////com2//console.log('sssssssssssssss',x,s,i)
+
       if (x in setV) {
-        //delete setV[x]
+
         ls--;
         if (ls == 0) {
           s=i
@@ -566,37 +548,30 @@ module.exports = function () {
           break
         }
       } else 
-          //d[x] = c.slice(s, i)
+
           setV[x] = c.slice(s, i)
-      
+
     }
 
-    ////comment_console////com2//console.log('-------------',offs,c[offs],c[offs+1],m,n,offs,s,i,r)
     let lenId,ids = []
     for (c in setV) {
         ids.push(...setV[c])
-        ////comment_console////com2//console.log('setV---',setV[c].length)
+
     }
-    /*for (c in d) {
-      ids.push(...d[c])
-      //comment_console////com2//console.log('d---',d[c].length)
-    }*/
+
     if (r) {
       lenId = i-offs
       ids.push(...r)
-      ////comment_console////com2//console.log('r---',r.length)
+
     }
     else{
       lenId = i+1-offs
       ids.push(255)
     }
 
-
     let d_l = base(250, ids.length)
     ids.unshift(d_l.length+1,...d_l);
-    //com2//console.log('___rrr__',r,i,offs,setV)
-        //com2//console.log('11111111111111111',ids.length,lenId)
-    
+
     rUpd[oi.vId] = {
       o: [oi[0][2], oi[0][3]],
       ids: ids,
@@ -614,12 +589,8 @@ module.exports = function () {
       colCV = {
         ...colSV_,
       };
-    
-
-
 
     let m , x, n, offs = oi[0][3], i = offs+c[offs];
-    
 
     while(c[i]!=255){
       s = i ;
@@ -638,21 +609,20 @@ module.exports = function () {
       }
       i+=1+m
 
-      ///////
       setV[x] = c.slice(s, i);
       c2 = setV[x].slice(i-s-m);
-      ////com2//console.log('sssssssssssssss',x,s,i,c2.toString("utf-8"),c.slice(i-m, i).toString("utf-8"),c2.toString("utf-8").length)
+
       if (x in colN) {
         lNC--;
         if (x in colCN) {
           colCV[colCN[x]] = colval[colN[x]] = c2.toString("utf-8");
           lNC--
         } else colval[colN[x]] = c2.toString("utf-8")
-        
+
       } else if (x in colCN) {
         colCV[colCN[x]] = c2.toString("utf-8")
         lNC--;
-        
+
       }
       if (lNC == 0) {
         s=i
@@ -667,12 +637,8 @@ module.exports = function () {
         r = c.slice(s, i)
         break
       }
-      
+
     }
-
-
-    
-
 
     if (chekCond(id_, colval, colCV)) {
       let newC,lenId,ids = [];
@@ -682,27 +648,25 @@ module.exports = function () {
           setV[cn[c][0]] = [...cn[c][1], 254, ...base(250, newC.length), 253, ...newC]
         }
       }
-      
+
       for (c in setV) {
           ids.push(...setV[c])
-          ////comment_console////com2//console.log('setV---',setV[c].length)
+
       }
       if(ids.length){
         if (r) {
           lenId = i-offs
           ids.push(...r)
-          ////comment_console////com2//console.log('r---',r.length)
+
         }
         else{
           lenId = i+1-offs
           ids.push(255)
         }
-        
+
         let d_l = base(250, ids.length)
         ids.unshift(d_l.length+1,...d_l);
 
-        //com2//console.log('___rrr__',r,i,offs,setV)
-        //com2//console.log('11111111111111111',ids.length,lenId,colval)
         rUpd[oi.vId] = {
           o: [oi[0][2], oi[0][3]],
           ids: ids,
@@ -741,12 +705,8 @@ module.exports = function () {
     colCV = {
       ...colSV_,
     };
-    
-
-
 
     let m , x, n , offs = oi[0][3], i = offs+c[offs];
-
 
     while(c[i]!=255){
       x = n = 0;
@@ -763,9 +723,7 @@ module.exports = function () {
           i++;
       }
       i+=1+m
-      //comment_console////com2//console.log('sssssssssssssss',x,s,i)
 
-      //c2 = c.slice(l, l += m);
       c2 = c.slice(i-m,i);
       if (x in colN) {
         lNC--;
@@ -773,11 +731,11 @@ module.exports = function () {
           colCV[colCN[x]] = colval[colN[x]] = c2.toString("utf-8");
           lNC--
         } else colval[colN[x]] = c2.toString("utf-8")
-        
+
       } else if (x in colCN) {
         colCV[colCN[x]] = c2.toString("utf-8")
         lNC--;
-        
+
       }
       if (lNC == 0) {
         i=offs+1
@@ -791,11 +749,7 @@ module.exports = function () {
         break
       }
 
-      ///////
-      
-      
     }
-
 
     if (chekCond(id_, colval, colCV)) {
       let newC,lenId,ids = [],setV = {};
@@ -805,22 +759,22 @@ module.exports = function () {
           setV[cn[c][0]] = [...cn[c][1], 254, ...base(250, newC.length), 253, ...newC]
         }
       }
-      
+
       for (c in setV) {
           ids.push(...setV[c])
-          //comment_console////com2//console.log('setV---',setV[c].length)
+
       }
-      
+
       if(ids.length){
         if (lNC) {
           lenId = i+1-offs
           ids.push(255)
-          
+
         }
         else{
           lenId = i-offs
         }
-        
+
         let d_l = base(250, ids.length)
         ids.unshift(d_l.length+1,...d_l);
 
@@ -858,7 +812,7 @@ module.exports = function () {
     colval = {
         ...colval_,
       };
-    
+
     let m , x, n, i = oi[0][3]+c[oi[0][3]];
     while(c[i]!=255){
       x = n = 0;
@@ -891,11 +845,7 @@ module.exports = function () {
               }
             }
 
-
-      
     }
-
-
 
     if (chekCond(id_, colval)) {
       let lenId;
@@ -903,7 +853,7 @@ module.exports = function () {
           lenId = i+1-offs  
       else
         lenId = i-offs
-        
+
       rUpd[oi.vId] = {
         o: [oi[0][2], oi[0][3]],
         lenId: lenId,
@@ -928,7 +878,7 @@ module.exports = function () {
         vId = oi.vId = oi.vId1 = oi.vl[b + 1] - oi.vl[b]
         chunk = segment(vId, oi, s)
       } else {
-        //oi.r = 0
+
         return
       }
     }
@@ -942,7 +892,7 @@ module.exports = function () {
         vId = oi.vId = oi.vId1 = 1;
         chunk = segment(vId, oi, s)
       } else {
-        //oi.r = 0;
+
         return
       }
     }
@@ -973,7 +923,7 @@ module.exports = function () {
       while (vId) {
         n++
         x = vId * 10 ** n
-        //r = vId % 10;
+
         if (oi[n] && oi[n][0] == x) {
           if (oi[n][1] != oi.f)
             n--
@@ -1028,7 +978,7 @@ module.exports = function () {
         vId = oi.vId = oi.vId1 = oi.vl[b + 1] - oi.vl[b];
         chunk = segment(vId, oi, s)
       } else {
-        //oi.r = 0;
+
         return
       }
     }
@@ -1050,7 +1000,7 @@ module.exports = function () {
         vId = oi.vId = oi.vId1 = 1;
         chunk = segment(vId, oi, s)
       } else {
-        //oi.r = 0;
+
         return
       }
     }
@@ -1090,7 +1040,7 @@ module.exports = function () {
       while (vId) {
         n++
         x = vId * 10 ** n
-        
+
         if (oi[n] && oi[n][0] == x) {
           if (oi[n][1] != oi.f)
             n--
@@ -1324,7 +1274,7 @@ module.exports = function () {
           rows: []}
         };
     }
-    
+
     chk = {
       ...chk,
       vlsp: vlsp,
@@ -1356,7 +1306,7 @@ module.exports = function () {
         error: {error: " Columns must a array .. "}
       }
     }
-    
+
     return {
       pathTb: pathTb,
       clmn: clmn,
@@ -1373,13 +1323,13 @@ module.exports = function () {
     fs.close(oi.idxF, function (argument) { });
     if (oi.difOffs && ifl[2] == oi.f) {
       let doLast = vlsp[2];
-      //comment_console////com2//console.log('##############',doLast,oi.difOffs)
+
       let n = 1;
       while (n <= oi.difOffs[1]) {
         doLast[n] += oi.difOffs[0];
         n += 1
       }
-      //comment_console////com2//console.log('##############',doLast,oi.difOffs)
+
       let ifl = vlsp[1];
       ifl[3] = ifl[3] + oi.difOffs[0];
       fs.writeFileSync(pathTb + "/i/ref.txt", vlsp[0].join("|") + "\n" + ifl.join("|") + "\n" + doLast.join("|"))
@@ -1547,7 +1497,7 @@ module.exports = function () {
           clmnL
         } = colForInsert(pathDB, table, clmn);
         if (error) return error;
-        
+
         if (!Array.isArray(val)) {
           return {
             error: {error: " Values must a array .. "}
@@ -1567,16 +1517,11 @@ module.exports = function () {
           fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a"),
           fIb = fs.openSync(pathTb + `/i/i${fz}.hoc`, "a");
         let c, ii, m;
-        /*for (c = 0; c < clmnL; c++) {
-          v = Buffer.from(''+val[c]);
-          d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-          ////comment_console////com2//console.log('::::::::',[...ca[c][1],254,...base(250, v.length),253,...v].length)
-          
-        }*/
+
         for (c in ca) {
           v = Buffer.from(''+val[ca[c][0]]);
           d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-          
+
         }
         d.push(255);
         d_l = base(250, d.length)
@@ -1637,7 +1582,7 @@ module.exports = function () {
           clmnL
         } = colForInsert(pathDB, table, clmn);
         if (error) return error;
-        
+
         var vals_L;
         if (!Array.isArray(vals) || (vals_L = vals.length) == 0) {
           return {
@@ -1645,7 +1590,6 @@ module.exports = function () {
           }
         }
 
-        //let do2_ = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         let [vl, ifl, do_] = refData(pathTb), fz = vl.length - 1, b_z = 2 ** (8 * fz - 1), i_ = ifl[0], i = ifl[0] - ifl[1], vId = ifl[1], z = ifl[2], len_ = ifl[3], z_ = z, zs = [z_ & 0x7f];
         z_ >>= 7;
         while (z_ > 0) {
@@ -1668,34 +1612,29 @@ module.exports = function () {
               error: {error: " Values must a Two-dimensional array .. "}
             }
           }
-          
+
           vId += 1;
           d = []
-          
-          /*for (c = 0; c < clmnL; c++) {
-            v = Buffer.from(''+val[c]);
-            d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-            //comment_console////com2//console.log('::::::::',c,val[c],ca[c])
-          }*/
+
           for (c in ca) {
             v = Buffer.from(''+val[ca[c][0]]);
             d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-            ////comment_console////com2//console.log('::::::::',c,val[ca[c][0]],ca[c])
+
           }
           d.push(255);
           d_l = base(250, d.length)
           d.unshift(d_l.length+1,...d_l);
-          ////comment_console////com2//console.log('+++++++',d.length)
+
           ii = vId;
           m = 0;
           while (ii % 10 == 0) {
             m += 1;
-            ////comment_console////com2//console.log('+++++++',vId,m,len_)
+
             do_[m] = len_;
-            //do2_[m] = len_-do2_[m-1];
+
             ii = ii / 10
           }
-          //l02 = len_ - do2_[1]
+
           l0 = len_ - do_[m + 1];
           fs.writeFileSync(fDb, Buffer.from(d));
           fs.writeFileSync(fIb, Buffer.from([...zs, ...to_3_Bytes(l0)]));
@@ -1725,7 +1664,7 @@ module.exports = function () {
             fDb = fs.openSync(pathTb + `/d/b${z}.txt`, "a")
           }
         }
-        ////comment_console////com2//console.log('_____ vId ____',do_,do2_,len_)
+
         i += vId;
         fs.close(fIb, function (argument) { });
         fs.close(fDb, function (argument) { });
@@ -1772,7 +1711,7 @@ module.exports = function () {
             else if (type == "rowOffset") result = parse.rowOffset(...args);
             if (result.error) 
               return result;
-            
+
             if (result.row_count) vals = result.rows;
             if (!Array.isArray(vals)) {
               return {error: {error: " Incorrect CSV format: rows must be an array "}}
@@ -1793,18 +1732,14 @@ module.exports = function () {
               } else {
                 return {error: {error: " Incorrect CSV Format. Number of headers and the number of values in each row must be equal "}}
               }
-          
+
               vId += 1;
               d = []
-          
-              /*for (c = 0; c < clmnL; c++) {
-                v = Buffer.from(''+val[c]);
-                d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-              }*/
+
               for (c in ca) {
                 v = Buffer.from(''+val[ca[c][0]]);
                 d.push(...ca[c][1],254,...base(250, v.length),253,...v)
-                
+
               }
               d.push(255);
               d_l = base(250, d.length)
@@ -1902,7 +1837,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -1910,14 +1845,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //getOffs(oi);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -1932,9 +1865,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -1949,9 +1880,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -1966,9 +1895,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -1985,9 +1912,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -2001,9 +1926,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -2017,9 +1940,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -2033,9 +1954,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     rows.push(slc({
@@ -2082,7 +2001,7 @@ module.exports = function () {
           b = 0;
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2194,7 +2113,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2202,14 +2121,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //getOffs(oi);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2224,9 +2141,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2241,9 +2156,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2258,9 +2171,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (offs && oi.r) {
-                //  getOffs(oi)
+
                 while (offs && getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2277,9 +2188,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2293,9 +2202,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2309,9 +2216,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2325,9 +2230,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////getOffs(oi);
-                //while (oi.r) {
-                //  getOffs(oi)
+
                 while (getOffs(oi)) {
                   if (oi[0]) {
                     row = srch(id_, oi, colN, colval, colCN, colCV, lNC, chekCond);
@@ -2381,7 +2284,7 @@ module.exports = function () {
           b = 0;
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2448,7 +2351,7 @@ module.exports = function () {
           rows: rows,
         }
       };
-      
+
       update = function (table, id_, offs, lim, clmn, vals) {
         let sT = Date.now();
         var {
@@ -2487,7 +2390,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2495,14 +2398,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls);
@@ -2514,9 +2415,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls)
@@ -2528,9 +2427,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls);
@@ -2542,9 +2439,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls)
@@ -2558,9 +2453,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls);
@@ -2571,9 +2464,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls)
@@ -2584,9 +2475,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls);
@@ -2597,9 +2486,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     upd(oi, updInfo.rUpd, setV, ls)
@@ -2642,7 +2529,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2750,7 +2637,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2758,14 +2645,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     if(updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)){
@@ -2778,9 +2663,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -2792,9 +2675,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     if(updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)){
@@ -2807,9 +2688,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -2823,9 +2702,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     if(updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)){
@@ -2837,9 +2714,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -2850,9 +2725,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     if(updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)){
@@ -2864,9 +2737,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     updIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -2919,7 +2790,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -2998,9 +2869,8 @@ module.exports = function () {
           setV
         } = colForUpd(pathTb, clmn, vals);
         if (error) return error;
-        
-        let d_l, d = [];
 
+        let d_l, d = [];
 
         for (let x in setV) {
           d.push(...setV[x])
@@ -3029,7 +2899,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3037,14 +2907,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen);
@@ -3056,9 +2924,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen)
@@ -3070,9 +2936,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen);
@@ -3084,9 +2948,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen)
@@ -3100,9 +2962,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen);
@@ -3113,9 +2973,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen)
@@ -3126,9 +2984,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen);
@@ -3139,9 +2995,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chng(oi, updInfo.rUpd, d, newLen)
@@ -3174,9 +3028,8 @@ module.exports = function () {
           setV
         } = colForUpd(pathTb, clmn, vals);
         if (error) return error;
-        
-        let d_l, d = [];
 
+        let d_l, d = [];
 
         for (let x in setV) {
           d.push(...setV[x])
@@ -3195,7 +3048,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3303,7 +3156,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3311,14 +3164,12 @@ module.exports = function () {
         let chunk = segment(vId, oi, oi.s);
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
@@ -3330,9 +3181,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -3344,9 +3193,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
@@ -3358,9 +3205,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -3374,9 +3219,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
@@ -3387,9 +3230,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -3400,9 +3241,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond);
@@ -3413,9 +3252,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     chngIf(id_, oi, updInfo.rUpd, colN, colval, colCN, colCV, cn, lNC, chekCond)
@@ -3468,7 +3305,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3562,7 +3399,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3571,14 +3408,12 @@ module.exports = function () {
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
         oi.xf = chunk.slice(0, b)
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd);
@@ -3590,9 +3425,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd)
@@ -3604,9 +3437,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd);
@@ -3618,9 +3449,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd)
@@ -3634,9 +3463,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd);
@@ -3647,9 +3474,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd)
@@ -3660,9 +3485,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd);
@@ -3673,9 +3496,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDel(oi, updInfo.rUpd)
@@ -3713,7 +3534,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3818,7 +3639,7 @@ module.exports = function () {
           vId: vId,
           vId1: vId,
           vId0: vId,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
@@ -3827,14 +3648,12 @@ module.exports = function () {
         oi.f = B(chunk, b);
         oi.idFr = fs.readFileSync(oi._pathD + oi.f + ".txt");
         oi.xf = chunk.slice(0, b)
-        //upd_offs(oi, updInfo);
+
         if (1) {
           if (offsNum) {
             if (offs > 0) {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
@@ -3846,9 +3665,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
@@ -3860,9 +3677,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
@@ -3874,9 +3689,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (offs && oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (offs && upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
@@ -3890,9 +3703,7 @@ module.exports = function () {
           } else {
             if (offs == "+") {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
@@ -3903,9 +3714,7 @@ module.exports = function () {
                   oi.vId += 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
@@ -3916,9 +3725,7 @@ module.exports = function () {
               }
             } else {
               if (lim) {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond);
@@ -3929,9 +3736,7 @@ module.exports = function () {
                   oi.vId -= 1;
                 }
               } else {
-                ////upd_offs(oi, updInfo);
-                //while (oi.r) {
-                //  upd_offs(oi, updInfo)
+
                 while (upd_offs(oi, updInfo)) {
                   if (oi[0]) {
                     iDelIf(id_, oi, updInfo.rUpd, colN, colval, cn, lN, chekCond)
@@ -3979,7 +3784,7 @@ module.exports = function () {
         }
         var vId, oi = {
           vl: vl,
-          //r: 1,
+
           _pathX : pathTb + "/i/i",
           _pathD : pathTb + "/d/b"
         };
